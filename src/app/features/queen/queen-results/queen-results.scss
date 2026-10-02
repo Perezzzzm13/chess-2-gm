@@ -1,0 +1,196 @@
+@use 'mixins' as *;
+
+:host {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(8, 2, 6, 0.72);
+  animation: fade 0.2s steps(3);
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+.card {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  width: min(100%, 420px);
+  padding: 20px 22px 22px;
+  border: $px solid $outline;
+  background: #150910;
+  box-shadow:
+    inset 0 0 0 $px #3a1a24,
+    inset 0 ($px * 2) 0 $px rgba(255, 220, 160, 0.06);
+  @include pixel-corners($px, 2);
+  animation: drop 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.3);
+}
+
+@keyframes drop {
+  from {
+    transform: translateY(-24px) scale(0.92);
+  }
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-pixel);
+  font-size: 4rem;
+  line-height: 0.8;
+  text-transform: uppercase;
+  @include neon-text(rgba(255, 40, 80, 0.7), #ffe3e8);
+}
+
+.loot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-pixel);
+  font-size: 4.2rem;
+  line-height: 0.8;
+  color: #ffd25a;
+  @include outlined($w: 3px, $drop: 4px);
+
+  app-icon {
+    --icon-size: 40px;
+    --icon-stroke: #{$outline};
+  }
+}
+
+.stamp {
+  position: absolute;
+  top: -14px;
+  right: -64px;
+  padding: 2px 8px 4px;
+  border: 2px solid #ff3b5c;
+  font-family: var(--font-pixel);
+  font-size: 1.2rem;
+  font-style: normal;
+  line-height: 1;
+  text-transform: uppercase;
+  color: #ff3b5c;
+  text-shadow: none;
+  transform: rotate(12deg);
+  animation: stamp 0.3s 0.3s steps(3) backwards;
+}
+
+.stamp--small {
+  position: static;
+  margin-left: 6px;
+  font-size: 0.9rem;
+  vertical-align: middle;
+}
+
+@keyframes stamp {
+  from {
+    opacity: 0;
+    transform: rotate(12deg) scale(2);
+  }
+}
+
+.bonus {
+  margin: -6px 0 0;
+  font-family: var(--font-spray);
+  font-size: 1.3rem;
+  line-height: 1;
+  color: #f5e03a;
+  transform: rotate(-3deg);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  width: 100%;
+  margin: 0;
+
+  div {
+    display: grid;
+    justify-items: center;
+    padding: 6px 4px;
+    background: #0b0406;
+    @include pixel-corners;
+  }
+
+  dt {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #9d8592;
+  }
+
+  dd {
+    margin: 0;
+    font-family: var(--font-pixel);
+    font-size: 1.9rem;
+    line-height: 1;
+    color: var(--neon-ivory, #fff4dc);
+  }
+}
+
+.banked {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #ffd25a !important;
+
+  app-icon {
+    --icon-size: 18px;
+  }
+}
+
+.haul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    font-family: var(--font-pixel);
+    font-size: 1.4rem;
+    color: #d9c4cf;
+  }
+
+  img {
+    width: 32px;
+    height: 32px;
+    image-rendering: pixelated;
+  }
+}
+
+.actions {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+
+  .btn {
+    width: 100%;
+  }
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  margin-left: 6px;
+  background: #ffd25a;
+  animation: blink 0.7s steps(2) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}

@@ -1,0 +1,112 @@
+@use 'mixins' as *;
+
+:host {
+  display: block;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 12px 6px 6px;
+  border: $px solid $outline;
+  background: #1a0a0f;
+  box-shadow:
+    inset 0 0 0 $px #3a2a14,
+    inset 0 (-$px * 2) 0 $px rgba(0, 0, 0, 0.3);
+  transition: background 0.2s steps(2);
+  @include pixel-corners;
+}
+
+/* Turno activo: el filete se enciende en oro */
+.card--active {
+  background: #2a1218;
+  box-shadow:
+    inset 0 0 0 $px var(--neon-gold),
+    inset 0 0 14px rgba(255, 196, 64, 0.35);
+
+  .name {
+    color: var(--neon-gold);
+  }
+}
+
+.info {
+  min-width: 0;
+  flex: 1;
+}
+
+.name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
+  white-space: nowrap;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  line-height: 1.05;
+  color: var(--neon-ivory);
+  @include outlined($w: 1.5px, $drop: 2px);
+}
+
+.rating {
+  padding: 0 6px 1px;
+  border: 2px solid $outline;
+  background: #ffc845;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  line-height: 1.05;
+  color: #2a1204;
+  text-shadow: none;
+  @include pixel-corners(2px);
+}
+
+.captured {
+  display: flex;
+  align-items: center;
+  min-height: 20px;
+
+  img {
+    width: 20px;
+    height: 20px;
+    margin-right: -6px;
+  }
+}
+
+.advantage {
+  margin-left: 12px;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  line-height: 1;
+  color: var(--neon-gold);
+}
+
+.thinking {
+  display: flex;
+  gap: 4px;
+
+  span {
+    width: 8px;
+    height: 8px;
+    border: 2px solid $outline;
+    background: var(--neon-gold);
+    animation: bounce 0.9s infinite steps(3);
+
+    &:nth-child(2) {
+      animation-delay: 0.12s;
+    }
+
+    &:nth-child(3) {
+      animation-delay: 0.24s;
+    }
+  }
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-6px);
+  }
+}

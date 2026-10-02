@@ -1,0 +1,210 @@
+@use 'mixins' as *;
+
+.review {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 440px;
+  gap: 28px;
+  align-items: start;
+}
+
+.arena {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+}
+
+.arena__eval {
+  align-self: stretch;
+  padding-bottom: 64px;
+}
+
+.arena__board {
+  position: relative;
+  display: grid;
+  gap: 14px;
+  width: min(100%, calc(100vh - var(--header-height) - 140px));
+  min-width: 280px;
+}
+
+/* Aviso sobre el tablero cuando no se está viendo la partida tal cual */
+.mode-pill {
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 14px 4px;
+  border: $px solid $outline;
+  background: #efdcae;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  line-height: 1;
+  color: #2c1a0c;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  box-shadow: inset 0 (-$px) 0 rgba(150, 100, 40, 0.4);
+  @include pixel-corners;
+}
+
+.mode-pill--retry,
+.mode-pill--right,
+.mode-pill--wrong {
+  background: #2f7fd6;
+  color: #fff;
+  @include outlined($w: 1px, $drop: 1.5px);
+}
+
+.mode-pill--right {
+  background: #4fa83a;
+}
+
+.mode-pill--wrong {
+  background: #d8304d;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border: 2px solid $outline;
+
+  & + * {
+    margin-right: 6px;
+  }
+}
+
+.dot--best {
+  background: #5fae2e;
+}
+
+.dot--played {
+  background: #d8352a;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.controls__main {
+  width: 72px;
+}
+
+/* ───── Panel lateral ───── */
+.side {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: calc(100vh - var(--header-height) - 48px);
+  position: sticky;
+  top: calc(var(--header-height) + 24px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.panel__title {
+  margin-bottom: 0;
+}
+
+.side__summary {
+  color: var(--neon-gold) !important;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.side__wait {
+  margin: 0;
+  font-weight: 700;
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+.practice-done {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+
+  strong {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    line-height: 1;
+  }
+}
+
+.practice-done__actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.moments-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  line-height: 1;
+  color: var(--text-muted);
+
+  .btn {
+    width: 52px;
+  }
+}
+
+.side__moves {
+  flex: 1 0 140px;
+  min-height: 140px;
+  overflow: hidden;
+}
+
+.empty {
+  grid-column: 1 / -1;
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+  max-width: 480px;
+  margin: 40px auto 0;
+}
+
+@media (max-width: 1000px) {
+  .review {
+    grid-template-columns: 1fr;
+  }
+
+  .arena__board {
+    width: min(100%, 640px);
+  }
+
+  .side {
+    position: relative;
+    top: auto;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .side__moves {
+    max-height: 240px;
+  }
+}
+
+@media (max-width: 520px) {
+  .arena__eval {
+    display: none;
+  }
+
+  .arena__board {
+    min-width: 0;
+  }
+
+  .controls .btn--icon {
+    width: 46px;
+  }
+
+  .mode-pill {
+    font-size: 1.1rem;
+  }
+}

@@ -1,0 +1,10 @@
+<span [class]="'icon icon--' + size()" [style.background-color]="info().color" [title]="info().label">
+  @if (info().icon; as icon) {
+    <app-icon [name]="icon" />
+  } @else {
+    {{ info().symbol }}
+  }
+</span>
+@if (showLabel()) {
+  <span class="label" [style.color]="info().color">{{ info().label }}</span>
+}

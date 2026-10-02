@@ -1,0 +1,310 @@
+@use 'mixins' as *;
+
+/* Tres columnas centradas: rival · escaparate · lo que te espera */
+.lobby {
+  display: grid;
+  grid-template-columns: minmax(0, 300px) minmax(0, 600px) minmax(0, 300px);
+  justify-content: center;
+  align-items: start;
+  gap: 34px;
+  padding-top: 40px;
+}
+
+.lobby__side {
+  display: grid;
+  gap: 22px;
+}
+
+.lobby__stage {
+  position: relative;
+}
+
+/* Pintada de spray en la pared, detrás del escaparate */
+.tag {
+  position: absolute;
+  top: -34px;
+  left: -26px;
+  z-index: 1;
+  font-family: var(--font-spray);
+  font-size: 2.6rem;
+  line-height: 1;
+  color: #ff3b5c;
+  text-shadow:
+    0 0 3px rgba(255, 59, 92, 0.8),
+    0 0 12px rgba(255, 59, 92, 0.35);
+  transform: rotate(-9deg);
+  pointer-events: none;
+
+  /* Chorretones de pintura */
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 78%;
+    width: 3px;
+    border-radius: 0 0 2px 2px;
+    background: #ff3b5c;
+    opacity: 0.85;
+  }
+
+  &::before {
+    left: 30%;
+    height: 22px;
+  }
+
+  &::after {
+    left: 64%;
+    height: 12px;
+  }
+}
+
+/* ───── Tu próximo rival ───── */
+.duel {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  padding: 22px 20px 20px;
+  text-align: center;
+
+  .btn {
+    width: 100%;
+  }
+}
+
+/* Pintadas de spray sueltas: el único sitio donde el graffiti habla */
+.spray {
+  position: absolute;
+  z-index: 3;
+  font-family: var(--font-spray);
+  line-height: 1;
+  pointer-events: none;
+}
+
+.duel__tag {
+  top: 16px;
+  right: 14px;
+  font-size: 1.35rem;
+  color: #ffd25a;
+  transform: rotate(8deg);
+}
+
+.puzzle__room {
+  margin-top: -4px;
+  font-weight: 700;
+  color: var(--text-faint);
+}
+
+.duel__name {
+  margin: 0;
+  font-size: 3rem;
+  @include neon-text;
+}
+
+.duel__quote {
+  margin: 2px 0 4px;
+  font-style: italic;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.duel__other {
+  font-weight: 700;
+  color: var(--text-muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+
+  @include neon-hover;
+}
+
+/* ───── Última partida ───── */
+.last {
+  display: grid;
+  gap: 10px;
+  padding: 16px 18px;
+  color: inherit;
+  @include selector;
+}
+
+.last__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.stamp {
+  padding: 1px 10px 4px;
+  border: $px solid $outline;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  line-height: 1;
+  color: #fff;
+  @include pixel-corners;
+  @include outlined($w: 1.5px, $drop: 2px);
+}
+
+.stamp--win {
+  background: #4fa83a;
+}
+
+.stamp--loss {
+  background: #d8304d;
+}
+
+.stamp--draw {
+  background: #7a6a64;
+}
+
+.last__who {
+  display: grid;
+  min-width: 0;
+
+  strong {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    line-height: 1;
+  }
+
+  span {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--text-muted);
+  }
+}
+
+.last__go {
+  --icon-size: 22px;
+  margin-left: auto;
+  color: var(--neon-gold);
+}
+
+.last__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.last__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+/* ───── Siguiente problema ───── */
+.puzzle {
+  display: grid;
+  gap: 8px;
+  color: inherit;
+  @include selector;
+
+  .btn {
+    justify-self: start;
+    margin-top: 6px;
+  }
+}
+
+.puzzle__title {
+  margin: 0;
+  font-size: 2.6rem;
+  color: var(--neon-gold);
+}
+
+.puzzle__task {
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.puzzle__progress {
+  height: 14px;
+}
+
+/* ───── La Reina: un letrero de neón carmesí ───── */
+.queen {
+  position: relative;
+  display: grid;
+  justify-items: start;
+  gap: 6px;
+  padding: 20px 20px 22px;
+  color: inherit;
+  background:
+    radial-gradient(ellipse at 85% 20%, rgba(255, 59, 92, 0.22), transparent 60%),
+    rgba(14, 4, 7, 0.85);
+  @include neon-box(var(--neon-red), var(--neon-red-glow));
+  @include selector;
+}
+
+.queen__new {
+  top: -14px;
+  left: 14px;
+  font-size: 1.6rem;
+  color: #f5e03a;
+  transform: rotate(-7deg);
+}
+
+.queen__piece {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  width: 92px;
+  animation: hover 2.4s ease-in-out infinite alternate;
+}
+
+@keyframes hover {
+  to {
+    transform: translateY(-8px);
+  }
+}
+
+.queen__title {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  line-height: 1;
+  @include neon-text(var(--neon-red-glow), #ffe0e6);
+}
+
+.queen__text {
+  max-width: calc(100% - 90px);
+  margin-bottom: 8px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+@media (max-width: 1240px) {
+  .lobby {
+    grid-template-columns: minmax(0, 300px) minmax(0, 560px);
+  }
+
+  .lobby__stage {
+    grid-column: 2;
+    grid-row: 1 / 3;
+  }
+
+  .lobby__side:last-child {
+    grid-column: 1;
+  }
+}
+
+@media (max-width: 860px) {
+  .lobby {
+    grid-template-columns: minmax(0, 560px);
+    padding-top: 24px;
+  }
+
+  .lobby__stage,
+  .lobby__side:last-child {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .lobby__stage {
+    order: -1;
+  }
+
+  .tag {
+    top: -26px;
+    left: -6px;
+    font-size: 2rem;
+  }
+}

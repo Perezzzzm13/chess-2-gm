@@ -1,0 +1,11 @@
+<div class="segmented" role="radiogroup" aria-label="Modo de juego">
+  @for (v of variants; track v.id) {
+    <button type="button" role="radio" [attr.aria-checked]="variant() === v.id" [class.active]="variant() === v.id" (click)="variant.set(v.id)">
+      <img [src]="'pieces/pixel/w' + v.piece.toUpperCase() + '.webp'" alt="" />
+      {{ v.name }}
+    </button>
+  }
+</div>
+@if (!selected().rated) {
+  <p class="note">{{ selected().tagline }} Amistosa: da experiencia, no cambia tu ELO.</p>
+}

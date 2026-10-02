@@ -1,0 +1,79 @@
+:root {
+  color-scheme: dark;
+
+  /* Terciopelo carmesí del salón del trono */
+  --velvet: #8c1022;
+  --velvet-bright: #c41d38;
+  --velvet-deep: #4a0712;
+  --velvet-darkest: #26030a;
+
+  /* Maderas nobles */
+  --mahogany: #5a2410;
+  --mahogany-dark: #2e1107;
+  --walnut: #3d1c0c;
+  --ebony: #1c0f07;
+
+  /* Oro */
+  --gold: #e6b84a;
+  --gold-light: #ffe49a;
+  --gold-bright: #fff6d0;
+  --gold-dark: #9a6814;
+  --gold-metal: linear-gradient(180deg, #fff7d4 0%, #f8d978 18%, #dca63a 42%, #a8731c 55%, #e7bf5b 78%, #fff0b5 100%);
+  --gold-metal-h: linear-gradient(90deg, #a8731c 0%, #f8d978 20%, #fff7d4 35%, #dca63a 55%, #a8731c 75%, #f3cf6c 100%);
+
+  /* Marfil y texto */
+  --ivory: #fff6e0;
+  --text: #fcf0d6;
+  --text-muted: #ecd3a5;
+  --text-faint: #c4a172;
+
+  --success: #8fd05a;
+  --danger: #ff5a45;
+  --warning: #ffcf4d;
+
+  /* Superficies */
+  --wood-grain:
+    repeating-linear-gradient(91deg, rgba(0, 0, 0, 0.16) 0 2px, transparent 2px 7px, rgba(255, 190, 120, 0.05) 7px 9px, transparent 9px 17px),
+    linear-gradient(140deg, #6b2c12 0%, #45190a 45%, #5d2510 100%);
+  --velvet-surface:
+    radial-gradient(ellipse at 30% 0%, rgba(255, 120, 120, 0.25), transparent 60%),
+    linear-gradient(170deg, #a0142a, #6a0a19 60%, #4a0712);
+  --medallion: radial-gradient(circle at 35% 30%, #e0344f, #8c1022 55%, #4a0712);
+  --ivory-surface: linear-gradient(160deg, #fffaf0, #f0dcae);
+  --ebony-surface: linear-gradient(160deg, #4a2c18, #1c0f07);
+  --inset-surface: rgba(20, 6, 2, 0.45);
+
+  --border-gold: 1px solid rgba(230, 184, 74, 0.7);
+  --border-faint: 1px solid rgba(230, 184, 74, 0.28);
+  --radius: 14px;
+  --radius-sm: 8px;
+  --shadow: 0 18px 40px rgba(20, 0, 4, 0.55);
+  --glow-gold: 0 0 22px rgba(255, 200, 80, 0.45);
+
+  /* Letra de píxel para títulos, botones y números; el texto corrido sigue siendo clásico */
+  --font-display: 'Jersey 10', 'Courier New', monospace;
+  --font-pixel: 'Jersey 10', 'Courier New', monospace;
+  /* Solo para pintadas de graffiti, como detalle */
+  --font-spray: 'Permanent Marker', 'Comic Sans MS', cursive;
+  --font-body: 'Alegreya Sans', 'Trebuchet MS', sans-serif;
+  --outline: #2a0e04;
+
+  /* Neón: letreros dorados y carmesí sobre la noche */
+  --night: #0d0608;
+  --night-2: #170a0e;
+  --brick: #2a1014;
+  --neon-gold: #ffd25a;
+  --neon-gold-glow: rgba(255, 196, 64, 0.65);
+  --neon-red: #ff3b5c;
+  --neon-red-glow: rgba(255, 40, 80, 0.6);
+  --neon-ivory: #fff4dc;
+
+  --header-height: 74px;
+  --gutter: clamp(16px, 3vw, 32px);
+}
+
+/* El tamaño de un icono no se hereda: así un contenedor no agranda los iconos que lleva dentro */
+@property --icon-size {
+  syntax: '*';
+  inherits: false;
+}

@@ -1,0 +1,4 @@
+<div class="bar" [class.bar--flipped]="orientation() === 'b'">
+  <div class="bar__white" [style.height.%]="whitePercent()"></div>
+  <span class="bar__label" [class.bar__label--white]="whiteAhead()">{{ label() }}</span>
+</div>

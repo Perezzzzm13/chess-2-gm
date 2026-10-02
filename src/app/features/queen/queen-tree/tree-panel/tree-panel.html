@@ -1,0 +1,57 @@
+<button type="button" class="close" (click)="closed.emit()" aria-label="Cerrar">
+  <app-icon name="cross" />
+</button>
+
+<div class="head">
+  <span class="badge" [class.badge--dark]="secret()">
+    @if (secret()) {
+      ?
+    } @else if (sprite(); as src) {
+      <img [src]="src" alt="" />
+    } @else {
+      <app-icon [name]="node().icon" />
+    }
+  </span>
+  <div class="title">
+    <span class="branch">{{ branch() }}</span>
+    <h2>{{ secret() ? '???' : node().name }}</h2>
+  </div>
+</div>
+
+@if (secret()) {
+  <p class="blurb">{{ needs() }}.</p>
+} @else {
+  @if (node().max > 1) {
+    <div class="pips" [attr.aria-label]="'Nivel ' + level() + ' de ' + node().max">
+      @for (on of pips(); track $index) {
+        <i [class.on]="on"></i>
+      }
+      <span>{{ level() }}/{{ node().max }}</span>
+    </div>
+  }
+
+  <p class="effect">
+    @if (effect().now; as now) {
+      <span class="now">{{ now }}</span>
+      <span class="arrow">▸</span>
+    }
+    <span class="next">{{ effect().next }}</span>
+  </p>
+
+  <p class="blurb">{{ node().blurb }}</p>
+
+  @if (maxed()) {
+    <p class="done">{{ node().max === 1 ? 'Desbloqueada' : 'Al máximo' }}</p>
+  } @else {
+    <button type="button" class="btn btn--big buy" [disabled]="!affordable()" (click)="buy.emit(node().id)">
+      @if (cost() === 0) {
+        Gratis
+      } @else {
+        <app-icon name="gem" /> {{ costText() }}
+      }
+    </button>
+    @if (!affordable()) {
+      <p class="short">Faltan {{ missing() }} de oro</p>
+    }
+  }
+}

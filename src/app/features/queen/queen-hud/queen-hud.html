@@ -1,0 +1,76 @@
+<div class="strip strip--top">
+  <div class="time" [class.time--low]="lowTime()">
+    <span class="time__num">{{ seconds() }}</span>
+    <div class="meter meter--time"><span [style.transform]="'scaleX(' + timeRatio() + ')'"></span></div>
+  </div>
+
+  <div class="gold" [class.gold--rush]="hud().goldRush" title="Oro de esta partida">
+    <app-icon name="gem" />
+    <span>{{ hud().gold }}</span>
+  </div>
+
+  <div class="combo" [class.combo--on]="hud().combo >= 2">
+    <span class="combo__num" #combo>x{{ hud().combo >= 2 ? hud().combo : 1 }}</span>
+    <span class="combo__label">combo</span>
+    <span class="combo__fuse" [style.transform]="'scaleX(' + hud().comboLeft + ')'"></span>
+  </div>
+
+  <button type="button" class="pause" (click)="pauseToggle.emit()" title="Pausa (Esc)" aria-label="Pausa">
+    <i></i><i></i>
+  </button>
+</div>
+
+<div class="strip strip--bottom">
+  <div class="stamina" [class.stamina--tired]="hud().stamina < 1 && !hud().frenzyActive">
+    <span class="label">{{ hud().stamina < 1 && !hud().frenzyActive ? 'Agotada' : 'Stamina' }}</span>
+    @if (pips(); as pips) {
+      <div class="pips">
+        @for (fill of pips; track $index) {
+          <span class="pip"><i [style.transform]="'scaleY(' + fill + ')'"></i></span>
+        }
+      </div>
+    } @else {
+      <div class="meter meter--stamina"><span [style.transform]="'scaleX(' + hud().stamina / hud().maxStamina + ')'"></span></div>
+    }
+  </div>
+
+  @if (hud().abilities.length) {
+    <div class="skills">
+      @for (a of hud().abilities; track a.id) {
+        <button
+          type="button"
+          class="skill"
+          [class]="'skill skill--' + a.id"
+          [class.skill--ready]="a.charges > 0"
+          [title]="names[a.id] + ' (' + a.key + ')'"
+          (click)="abilityUse.emit(a.id)"
+        >
+          <span class="skill__fill" [style.transform]="'scaleY(' + (a.charges > 0 ? 1 : a.charge) + ')'"></span>
+          <img class="skill__piece" [src]="sprites[a.id]" alt="" />
+          <kbd class="skill__key">{{ a.key }}</kbd>
+          @if (a.maxCharges > 1) {
+            <span class="skill__count">{{ a.charges }}</span>
+          }
+        </button>
+      }
+    </div>
+  }
+
+  <button
+    type="button"
+    class="frenzy"
+    [class.frenzy--ready]="hud().frenzyReady"
+    [class.frenzy--active]="hud().frenzyActive"
+    [disabled]="!hud().frenzyReady"
+    (click)="frenzyActivate.emit()"
+  >
+    <span class="frenzy__fill" [style.transform]="'scaleX(' + hud().frenzy / 100 + ')'"></span>
+    <span class="frenzy__text">
+      <app-icon name="fire" />
+      {{ hud().frenzyActive ? '¡Frenesí!' : 'Frenesí' }}
+      @if (hud().frenzyReady) {
+        <kbd>Espacio</kbd>
+      }
+    </span>
+  </button>
+</div>

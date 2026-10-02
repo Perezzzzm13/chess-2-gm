@@ -1,0 +1,27 @@
+<div #scroller class="moves">
+  @for (row of rows(); track row.number) {
+    <div class="row">
+      <span class="number">{{ row.number }}.</span>
+      @for (cell of [row.white, row.black]; track $index) {
+        @if (cell) {
+          <button
+            type="button"
+            class="move"
+            [class.move--active]="cell.ply === current()"
+            [attr.data-ply]="cell.ply"
+            (click)="select.emit(cell.ply)"
+          >
+            @if (showBadges() && cell.evaluation) {
+              <app-class-badge [classification]="cell.evaluation.classification" />
+            }
+            {{ cell.san }}
+          </button>
+        } @else {
+          <span class="move move--empty">…</span>
+        }
+      }
+    </div>
+  } @empty {
+    <p class="empty">Aún no hay jugadas.</p>
+  }
+</div>

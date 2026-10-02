@@ -1,0 +1,103 @@
+<div class="page friends">
+  <header class="page-head">
+    <h1>Reta a un amigo</h1>
+  </header>
+
+  @switch (peer.status()) {
+    @case ('idle') {
+      <div class="grid">
+        <section class="panel card">
+          <h2 class="panel__title">Crear partida</h2>
+          <p class="card__label">Tú juegas con</p>
+          <div class="colors">
+            @for (opt of colorOptions; track opt.value) {
+              <button type="button" class="color" [class.color--active]="color() === opt.value" (click)="color.set(opt.value)">
+                @if (opt.value === 'random') {
+                  <app-icon name="dice" />
+                } @else {
+                  <img [src]="'pieces/pixel/' + opt.value + 'K.webp'" alt="" />
+                }
+                {{ opt.label }}
+              </button>
+            }
+          </div>
+          <p class="card__label">Modo</p>
+          <app-variant-picker [(variant)]="variant" />
+          <button type="button" class="btn btn--big" (click)="create()"><app-icon name="share" /> Invitar</button>
+        </section>
+
+        <section class="panel card">
+          <h2 class="panel__title">Tengo un código</h2>
+          <div class="field">
+            <label for="code">Código de tu amigo</label>
+            <input
+              id="code"
+              type="text"
+              maxlength="8"
+              placeholder="K3F9QZ"
+              autocomplete="off"
+              [value]="manualCode()"
+              (input)="manualCode.set($any($event.target).value)"
+              (keydown.enter)="joinManual()"
+            />
+          </div>
+          <button type="button" class="btn btn--ghost btn--big" (click)="joinManual()" [disabled]="!manualCode().trim()">
+            <app-icon name="key" /> Entrar
+          </button>
+        </section>
+      </div>
+    }
+
+    @case ('waiting') {
+      <section class="panel invite">
+        <h2 class="panel__title">Invitación lista</h2>
+        <div class="invite__body">
+          <div class="invite__qr">
+            @if (qr(); as src) {
+              <img [src]="src" alt="Código QR de la invitación" />
+            }
+          </div>
+          <div class="invite__info">
+            <p class="card__label">Código</p>
+            <div class="code">
+              @for (ch of peer.roomCode()?.split(''); track $index) {
+                <span>{{ ch }}</span>
+              }
+            </div>
+            <div class="link">{{ link() }}</div>
+            <div class="actions">
+              <button type="button" class="btn" (click)="copy()">{{ copied() ? '¡Copiado!' : 'Copiar enlace' }}</button>
+              @if (canShare) {
+                <button type="button" class="btn btn--ghost" (click)="share()"><app-icon name="share" /> Compartir</button>
+              }
+              <button type="button" class="btn btn--danger" (click)="cancel()">Cancelar</button>
+            </div>
+            <p class="waiting"><span class="dot"></span> Esperando a tu rival…</p>
+            @if (isLocalhost) {
+              <p class="parchment warning">
+                Estás en <strong>localhost</strong> y un móvil no podrá abrir este enlace. Arranca con
+                <code>npm run start:lan</code> y abre la IP de tu ordenador.
+              </p>
+            }
+          </div>
+        </div>
+      </section>
+    }
+
+    @case ('connecting') {
+      <section class="panel status">
+        <app-icon class="status__icon status__icon--hop" name="knight" />
+        <h2>Entrando en la partida {{ peer.roomCode() }}…</h2>
+        <button type="button" class="btn btn--danger" (click)="cancel()">Cancelar</button>
+      </section>
+    }
+
+    @default {
+      <section class="panel status">
+        <app-icon class="status__icon" name="flag" />
+        <p>{{ peer.error() ?? 'Se ha perdido la conexión con tu rival.' }}</p>
+        <button type="button" class="btn" (click)="cancel()">Volver</button>
+      </section>
+    }
+  }
+</div>

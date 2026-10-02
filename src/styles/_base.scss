@@ -1,0 +1,129 @@
+@use 'mixins' as *;
+
+/* Muro de ladrillo nocturno en píxeles: un azulejo de 32×16 que se escala ×3 */
+$bricks: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 16' width='96' height='48' shape-rendering='crispEdges'%3E%3Crect width='32' height='16' fill='%230e0507'/%3E%3Cg fill='%232e1419'%3E%3Crect x='0' y='0' width='15' height='7'/%3E%3Crect x='8' y='8' width='15' height='7'/%3E%3C/g%3E%3Cg fill='%2327101a'%3E%3Crect x='16' y='0' width='15' height='7'/%3E%3Crect x='0' y='8' width='7' height='7'/%3E%3Crect x='24' y='8' width='8' height='7'/%3E%3C/g%3E%3Cg fill='%233b1b20'%3E%3Crect x='0' y='0' width='15' height='1'/%3E%3Crect x='16' y='0' width='15' height='1'/%3E%3Crect x='0' y='8' width='7' height='1'/%3E%3Crect x='8' y='8' width='15' height='1'/%3E%3Crect x='24' y='8' width='8' height='1'/%3E%3C/g%3E%3Cg fill='%23170910'%3E%3Crect x='0' y='6' width='15' height='1'/%3E%3Crect x='16' y='6' width='15' height='1'/%3E%3Crect x='0' y='14' width='7' height='1'/%3E%3Crect x='8' y='14' width='15' height='1'/%3E%3Crect x='24' y='14' width='8' height='1'/%3E%3Crect x='5' y='3' width='2' height='1'/%3E%3Crect x='21' y='4' width='1' height='1'/%3E%3Crect x='13' y='11' width='2' height='1'/%3E%3C/g%3E%3C/svg%3E");
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  font-family: var(--font-body);
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--text);
+  background-color: var(--night);
+  -webkit-font-smoothing: antialiased;
+  /* La letra de píxel solo tiene un grosor: nada de negritas inventadas por el navegador */
+  font-synthesis: none;
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+}
+
+/* La pared de noche, iluminada por los letreros de neón. Va en una capa fija propia para que
+   el navegador no la repinte en cada scroll (background-attachment: fixed sí lo hace). */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    radial-gradient(ellipse 60% 34% at 50% -4%, rgba(255, 190, 70, 0.2), transparent 70%),
+    radial-gradient(ellipse 50% 40% at 0% 100%, rgba(255, 40, 80, 0.12), transparent 70%),
+    radial-gradient(ellipse 120% 90% at 50% 40%, transparent 50%, rgba(4, 0, 2, 0.6) 100%),
+    $bricks;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0 0 0.4em;
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  color: var(--neon-ivory);
+  @include outlined;
+}
+
+/* Los títulos de página son letreros de neón */
+h1 {
+  font-size: clamp(2.8rem, 5vw, 4rem);
+  @include neon-text;
+}
+
+h2 {
+  font-size: clamp(1.9rem, 3vw, 2.4rem);
+}
+
+h3 {
+  font-size: 1.7rem;
+  color: var(--gold-light);
+  @include outlined($w: 1.5px, $drop: 2px);
+}
+
+p {
+  margin: 0 0 0.8em;
+}
+
+a {
+  color: var(--gold-light);
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+}
+
+/* Las piezas de píxel (tablero Píxel, retratos, emblemas) se escalan sin suavizar */
+img[src*='pieces/pixel/'] {
+  image-rendering: pixelated;
+}
+
+::selection {
+  background: rgba(255, 210, 90, 0.4);
+}
+
+.page {
+  width: min(1320px, 100%);
+  margin: 0 auto;
+  padding: 30px var(--gutter) 72px;
+}
+
+.page-header {
+  margin-bottom: 28px;
+
+  p {
+    max-width: 640px;
+    font-size: 1.12rem;
+    color: var(--text-muted);
+  }
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

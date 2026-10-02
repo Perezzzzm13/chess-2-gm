@@ -1,0 +1,130 @@
+<div class="page review">
+  @if (game(); as g) {
+    <section class="arena">
+      <app-eval-bar class="arena__eval" [score]="score()" [orientation]="orientation()" />
+      <div class="arena__board">
+        @switch (mode()) {
+          @case ('best') {
+            <span class="mode-pill"><i class="dot dot--best"></i> Mejor jugada <i class="dot dot--played"></i> Jugada hecha</span>
+          }
+          @case ('line') {
+            <span class="mode-pill">Línea del motor · {{ lineStep() + 1 }} de {{ bestLine().length }}</span>
+          }
+          @case ('retry') {
+            @switch (retry().status) {
+              @case ('right') {
+                <span class="mode-pill mode-pill--right">¡Bien visto!</span>
+              }
+              @case ('wrong') {
+                <span class="mode-pill mode-pill--wrong">Esa no es</span>
+              }
+              @default {
+                <span class="mode-pill mode-pill--retry">Te toca: busca una jugada mejor</span>
+              }
+            }
+          }
+        }
+        <app-board
+          [fen]="boardFen()"
+          [orientation]="orientation()"
+          [lastMove]="lastMove()"
+          [badge]="badge()"
+          [arrows]="arrows()"
+          [movable]="movable()"
+          [hintSquare]="hintSquare()"
+          (move)="onRetryMove($event)"
+        />
+        <div class="controls">
+          <button type="button" class="btn btn--ghost btn--icon" (click)="goTo(-1)" title="Inicio (Inicio)"><app-icon name="first" /></button>
+          <button type="button" class="btn btn--icon controls__main" (click)="goTo(current() - 1)" title="Anterior (←)"><app-icon name="prev" /></button>
+          <button type="button" class="btn btn--icon controls__main" (click)="goTo(current() + 1)" title="Siguiente (→)"><app-icon name="next" /></button>
+          <button type="button" class="btn btn--ghost btn--icon" (click)="goTo(g.moves.length - 1)" title="Final (Fin)"><app-icon name="last" /></button>
+          <button type="button" class="btn btn--ghost btn--icon" (click)="flipped.set(!flipped())" title="Girar tablero"><app-icon name="flip" /></button>
+        </div>
+      </div>
+    </section>
+
+    <aside class="side panel">
+      <h2 class="panel__title">
+        Revisión
+        <a class="panel__aside side__summary" [routerLink]="['/partidas', g.id, 'resumen']">Resumen</a>
+      </h2>
+
+      @if (practice(); as p) {
+        @if (p.index >= p.plies.length) {
+          <div class="parchment practice-done">
+            <strong>Práctica terminada</strong>
+            <span>Has corregido {{ p.solved }} de {{ p.plies.length }} fallos.</span>
+            <div class="practice-done__actions">
+              <button type="button" class="btn btn--small" (click)="startPractice()">Repetir</button>
+              <button type="button" class="btn btn--ghost btn--small" (click)="exitPractice()">Cerrar</button>
+            </div>
+          </div>
+        }
+      }
+
+      @if (mode() === 'retry' && evaluation(); as ev) {
+        <app-retry-card
+          [state]="retry()"
+          [evaluation]="ev"
+          [practice]="practice()"
+          (again)="tryAgain()"
+          (hint)="showHint()"
+          (reveal)="revealSolution()"
+          (next)="nextPractice()"
+          (exit)="practice() ? exitPractice() : goTo(current())"
+        />
+      } @else if (current() === -1) {
+        <app-review-overview
+          [game]="g"
+          [evaluations]="evaluations()"
+          [accuracy]="accuracy()"
+          [complete]="complete()"
+          [progress]="progress()"
+          [keyMoments]="keyMoments()"
+          [mistakes]="myMistakes().length"
+          (start)="goTo(0)"
+          (practice)="startPractice()"
+          (goTo)="goTo($event)"
+        />
+      } @else if (evaluation(); as ev) {
+        <app-coach-card
+          [evaluation]="ev"
+          [comment]="comment()"
+          [moverName]="moverName()"
+          [isMine]="isMine()"
+          [mode]="mode()"
+          [lineStep]="lineStep()"
+          [bestLine]="bestLine()"
+          [retryable]="myMistakes().includes(ev.ply)"
+          (toggleBest)="toggleMode('best')"
+          (showLine)="showLineStep($event)"
+          (retry)="startRetry()"
+        />
+      } @else {
+        <p class="side__wait">Analizando esta jugada…</p>
+      }
+
+      @if (current() >= 0 && mode() !== 'retry' && keyMoments().length) {
+        <div class="moments-nav">
+          <button type="button" class="btn btn--ghost btn--small" [disabled]="previousMoment() === null" (click)="goTo(previousMoment()!)">
+            <app-icon name="prev" />
+          </button>
+          <span>{{ momentLabel() }}</span>
+          <button type="button" class="btn btn--ghost btn--small" [disabled]="nextMoment() === null" (click)="goTo(nextMoment()!)">
+            <app-icon name="next" />
+          </button>
+        </div>
+      }
+
+      <app-eval-graph [evaluations]="evaluations()" [current]="current()" (select)="goTo($event)" />
+      <app-move-list class="side__moves" [sans]="g.sans" [evaluations]="evaluations()" [current]="current()" (select)="goTo($event)" />
+    </aside>
+  } @else {
+    <section class="panel empty">
+      <h2 class="panel__title">Partida no encontrada</h2>
+      <p>Esta partida ya no está en el historial.</p>
+      <a class="btn" routerLink="/bots">Jugar una partida</a>
+    </section>
+  }
+</div>

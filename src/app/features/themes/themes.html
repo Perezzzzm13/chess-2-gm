@@ -1,0 +1,47 @@
+<div class="page vault">
+  <header class="page-head">
+    <h1>Tableros</h1>
+  </header>
+
+  <div class="themes">
+    @for (t of themes(); track t.id) {
+      <button
+        type="button"
+        class="panel theme"
+        [class.theme--active]="t.active"
+        [class.theme--locked]="!t.unlocked"
+        [disabled]="!t.unlocked"
+        (click)="select(t)"
+      >
+        <div class="theme__preview">
+          <app-board [fen]="previewFen" [theme]="t.id" [coordinates]="false" />
+          @if (!t.unlocked) {
+            <div class="theme__lock">
+              <strong class="theme__tape">Nivel {{ t.requiredLevel }}</strong>
+              <div class="progress"><span [style.width.%]="t.progress * 100"></span></div>
+              <small>Faltan {{ t.xpLeft }} XP</small>
+            </div>
+          }
+        </div>
+        <div class="theme__info">
+          <h3>
+            {{ t.name }}
+            @if (t.active) {
+              <span class="theme__using">en uso</span>
+            }
+          </h3>
+          <p>{{ t.description }}</p>
+        </div>
+      </button>
+    }
+  </div>
+
+  <label class="toggle demo">
+    <input
+      type="checkbox"
+      [checked]="profile.profile().unlockAll"
+      (change)="profile.update({ unlockAll: !profile.profile().unlockAll })"
+    />
+    Modo demo: desbloquear todos
+  </label>
+</div>

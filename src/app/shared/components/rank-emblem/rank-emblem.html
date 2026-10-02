@@ -1,0 +1,16 @@
+<div
+  class="emblem"
+  [class.emblem--locked]="locked()"
+  [style.width.px]="size()"
+  [style.height.px]="size() * 1.12"
+  [style.--c1]="rank().colors[0]"
+  [style.--c2]="rank().colors[1]"
+  [title]="rank().name"
+>
+  <div class="emblem__rim">
+    <div class="emblem__field">
+      <img [src]="'pieces/pixel/w' + rank().piece.toUpperCase() + '.webp'" alt="" draggable="false" />
+    </div>
+  </div>
+  <span class="emblem__tier" [style.font-size.px]="Math.max(10, size() * 0.2)">{{ numeral() }}</span>
+</div>

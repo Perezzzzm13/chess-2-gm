@@ -1,0 +1,432 @@
+@use 'mixins' as *;
+
+/* ───────────── Paneles ───────────── */
+
+/* Placa de noche con filete dorado, colgada en la pared */
+.panel {
+  position: relative;
+  padding: 22px;
+  background: linear-gradient(180deg, #1d0c11 0%, #140709 100%);
+  @include frame;
+}
+
+/* Título de sección dentro de un panel (las cintas se reservan para los momentos importantes) */
+.panel__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 14px;
+  font-size: 1.9rem;
+  color: var(--neon-gold);
+
+  app-icon {
+    --icon-size: 24px;
+    --icon-stroke: #{$outline};
+    color: var(--neon-gold);
+  }
+
+  .panel__aside {
+    margin-left: auto;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-shadow: none;
+  }
+}
+
+/* Cabecera de página: título y un dato, sin caja (el menú ya dice dónde estás) */
+.page-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 18px;
+  margin-bottom: 22px;
+
+  h1 {
+    margin: 0;
+  }
+
+  p {
+    margin: 0;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+}
+
+.panel--velvet {
+  background: linear-gradient(180deg, #4a0b1a 0%, #2c0610 100%);
+  box-shadow:
+    inset 0 0 0 $px #a3213b,
+    inset 0 ($px * 2) 0 $px rgba(255, 160, 180, 0.1),
+    inset 0 (-$px * 2) 0 $px rgba(0, 0, 0, 0.35);
+}
+
+/* Caja secundaria hundida dentro de un panel */
+.panel--flat {
+  border: $px solid $outline;
+  background: rgba(6, 2, 3, 0.6);
+  box-shadow: inset 0 $px 0 rgba(0, 0, 0, 0.6);
+  @include pixel-corners;
+}
+
+/* Hueco hundido dentro de un panel (listas, gráficas, notas) */
+.well {
+  border: $px solid $outline;
+  background: rgba(6, 2, 3, 0.6);
+  box-shadow: inset 0 $px 0 rgba(0, 0, 0, 0.6);
+  @include pixel-corners;
+}
+
+.parchment {
+  @include parchment;
+  padding: 14px 16px;
+}
+
+/* Cinta de tela para el título de un panel */
+.ribbon {
+  position: relative;
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  margin: -46px auto 14px;
+  padding: 6px 34px 8px;
+  background: #d22a48;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 12px) 50%, 100% 100%, 0 100%, 12px 50%);
+  box-shadow:
+    inset 0 $px 0 rgba(255, 200, 210, 0.4),
+    inset 0 (-$px * 2) 0 #7d0c22,
+    inset 0 0 0 $px $outline;
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  line-height: 1;
+  text-align: center;
+  color: var(--neon-ivory);
+  @include outlined;
+}
+
+/* ───────────── Botones ───────────── */
+
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 6px 22px 11px;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  line-height: 1;
+  letter-spacing: 0.03em;
+  color: #2a1204;
+  text-decoration: none;
+  cursor: pointer;
+  @include chunky(#ffc845, #b8740f, rgba(255, 245, 200, 0.7));
+
+  app-icon {
+    --icon-size: 0.9em;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    filter: saturate(0.3) brightness(0.65);
+  }
+}
+
+/* Secundario: carmesí */
+.btn--ghost {
+  color: var(--neon-ivory);
+  @include chunky(#d8304d, #7f0c22, rgba(255, 190, 200, 0.45));
+  @include outlined($w: 1.5px, $drop: 2px);
+}
+
+/* Discreto: piedra oscura */
+.btn--danger {
+  color: var(--text-muted);
+  @include chunky(#3a2a30, #1b1014, rgba(255, 255, 255, 0.12));
+}
+
+.btn--small {
+  min-height: 38px;
+  padding: 4px 14px 8px;
+  font-size: 1.3rem;
+}
+
+.btn--icon {
+  width: 48px;
+  padding: 0 0 3px;
+  font-size: 1.6rem;
+}
+
+.btn--big {
+  min-height: 64px;
+  padding: 8px 40px 14px;
+  font-size: 2.3rem;
+}
+
+/* ───────────── Etiquetas, pestañas, interruptores ───────────── */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 1px 10px 3px;
+  border: 2px solid $outline;
+  background: #2a1219;
+  box-shadow: inset 0 2px 0 rgba(255, 220, 170, 0.12);
+  font-weight: 800;
+  font-size: 0.92rem;
+  color: var(--gold-light);
+  @include pixel-corners(2px);
+}
+
+.segmented {
+  display: inline-flex;
+  padding: 4px;
+  gap: 4px;
+  border: $px solid $outline;
+  background: rgba(6, 2, 3, 0.7);
+  @include pixel-corners;
+
+  button {
+    min-height: 40px;
+    padding: 2px 16px 6px;
+    border: 0;
+    background: transparent;
+    font-family: var(--font-display);
+    font-size: 1.45rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    cursor: pointer;
+
+    &:hover:not(.active) {
+      color: var(--neon-gold);
+    }
+
+    &.active {
+      color: #2a1204;
+      background: #ffc845;
+      box-shadow:
+        inset 0 (-$px) 0 #b8740f,
+        inset 0 2px 0 rgba(255, 245, 200, 0.7);
+    }
+  }
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+
+  input {
+    appearance: none;
+    position: relative;
+    flex-shrink: 0;
+    width: 54px;
+    height: 30px;
+    border: $px solid $outline;
+    background: #2a1219;
+    box-shadow: inset 0 $px 0 rgba(0, 0, 0, 0.6);
+    cursor: pointer;
+    transition: background 0.15s steps(2);
+    @include pixel-corners;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      border: 2px solid $outline;
+      background: #9a8670;
+      transition: transform 0.12s steps(3);
+    }
+
+    &:checked {
+      background: #4fa83a;
+
+      &::after {
+        transform: translateX(24px);
+        background: #fff3d0;
+      }
+    }
+  }
+}
+
+/* Barra gruesa con brillo superior (XP, progreso) */
+.progress {
+  position: relative;
+  height: 18px;
+  border: $px solid $outline;
+  background: #1b0a0e;
+  overflow: hidden;
+  @include pixel-corners;
+
+  /* Relleno por segmentos, como una barra de vida */
+  span {
+    display: block;
+    height: 100%;
+    background:
+      repeating-linear-gradient(90deg, transparent 0 9px, rgba(0, 0, 0, 0.35) 9px 12px),
+      linear-gradient(180deg, #fff0a8 0 $px, #ffc845 $px calc(100% - #{$px}), #b8740f calc(100% - #{$px}));
+    transition: width 0.6s steps(12);
+  }
+}
+
+.progress--green span {
+  background:
+    repeating-linear-gradient(90deg, transparent 0 9px, rgba(0, 0, 0, 0.35) 9px 12px),
+    linear-gradient(180deg, #c8f590 0 $px, #6cc13f $px calc(100% - #{$px}), #2f7a1c calc(100% - #{$px}));
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+
+  label {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    color: var(--neon-gold);
+  }
+
+  input[type='text'] {
+    min-height: 46px;
+    padding: 6px 14px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    @include parchment;
+  }
+}
+
+input[type='range'] {
+  width: 100%;
+  accent-color: var(--gold);
+}
+
+.grid-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(270px, 100%), 1fr));
+  gap: 26px;
+}
+
+.stars {
+  color: var(--neon-gold);
+  letter-spacing: 2px;
+  @include outlined($w: 1.5px, $drop: 2px);
+
+  .off {
+    color: #3d262b;
+  }
+}
+
+/* Selector de color de piezas (blancas / azar / negras) */
+.colors {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.color {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: 8px 4px 12px;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  @include chunky(#2a1219, #12070a, rgba(255, 255, 255, 0.1));
+
+  img,
+  app-icon {
+    width: 34px;
+    height: 34px;
+    --icon-size: 34px;
+  }
+}
+
+.color--active {
+  color: #2a1204;
+  @include chunky(#ffc845, #b8740f, rgba(255, 245, 200, 0.7));
+
+  app-icon {
+    color: #2a1204;
+  }
+}
+
+/* Medallón: moneda de píxel con aro de oro (avatares e iconos) */
+.medallion {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border: $px solid $outline;
+  background: #b0142c;
+  color: var(--neon-ivory);
+  box-shadow:
+    inset 0 0 0 $px #e2aa3e,
+    inset 0 ($px * 3) 0 $px rgba(255, 200, 200, 0.18),
+    inset 0 (-$px * 3) 0 $px rgba(0, 0, 0, 0.3);
+  @include pixel-corners(6px, 2);
+}
+
+/* ───────────── Ventanas modales ───────────── */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(8, 2, 4, 0.82);
+  animation: fade-in 0.2s ease;
+}
+
+.modal {
+  width: min(460px, 100%);
+  margin-top: 30px;
+  text-align: center;
+  animation: pop-in 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.4);
+}
+
+@media (max-width: 480px) {
+  .segmented button {
+    padding: 2px 10px 6px;
+    font-size: 1.3rem;
+  }
+}
+
+/* Latido del cursor de selección (mixin selector) */
+@keyframes selector-beat {
+  50% {
+    transform: scale(0.97);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+}
+
+/* Letrero de neón para textos sueltos */
+.neon {
+  font-family: var(--font-display);
+  @include neon-text;
+}
+
+.neon--red {
+  @include neon-text(var(--neon-red-glow));
+}

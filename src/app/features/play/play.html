@@ -1,0 +1,171 @@
+<div class="play page">
+  <section class="arena">
+    @if (feedback()) {
+      <app-eval-bar class="arena__eval" [score]="evalScore()" [orientation]="orientation()" />
+    }
+    <div class="arena__board">
+      <app-player-card
+        [player]="topColor() === 'w' ? white() : black()"
+        [color]="topColor()"
+        [captured]="material().captured[topColor()]"
+        [advantage]="topColor() === 'w' ? material().diff : -material().diff"
+        [active]="!end() && turn() === topColor()"
+        [thinking]="botThinking() && topColor() !== playerColor()"
+      />
+      <app-board
+        [fen]="displayFen()"
+        [orientation]="orientation()"
+        [movable]="movable()"
+        [lastMove]="lastMove()"
+        [badge]="badge()"
+        (move)="onBoardMove($event)"
+      />
+      <app-player-card
+        [player]="orientation() === 'w' ? white() : black()"
+        [color]="orientation()"
+        [captured]="material().captured[orientation()]"
+        [advantage]="orientation() === 'w' ? material().diff : -material().diff"
+        [active]="!end() && turn() === orientation()"
+        [thinking]="botThinking() && orientation() !== playerColor()"
+      />
+    </div>
+  </section>
+
+  <aside class="side panel">
+    @if (!variant().rated) {
+      <span class="chip" [title]="variant().rules">Modo {{ variant().name }} · no cuenta para el ELO</span>
+    }
+    @if (notice(); as n) {
+      <p class="parchment notice">{{ n }}</p>
+    }
+
+    @if (drawOffered()) {
+      <div class="parchment notice notice--action">
+        <span>Tu rival te ofrece tablas.</span>
+        <div class="notice__buttons">
+          <button type="button" class="btn btn--small" (click)="answerDraw(true)">Aceptar</button>
+          <button type="button" class="btn btn--ghost btn--small" (click)="answerDraw(false)">Rechazar</button>
+        </div>
+      </div>
+    }
+
+    @if (feedback()) {
+      <div class="feedback">
+        @if (myLastEvaluation(); as ev) {
+          <app-class-badge [classification]="ev.classification" size="lg" />
+          <div>
+            <strong class="feedback__label" [style.color]="myLastInfo()?.color">{{ myLastInfo()?.label }}</strong>
+            <span class="feedback__san">{{ ev.san }}</span>
+            @if (showBestHint()) {
+              <p>La mejor era <strong>{{ ev.bestSan }}</strong></p>
+            } @else {
+              <p>{{ myLastInfo()?.description }}</p>
+            }
+          </div>
+        } @else if (analyzingMine()) {
+          <p class="feedback__wait">Analizando tu jugada…</p>
+        } @else {
+          <p class="feedback__wait">Aquí verás la nota de cada jugada.</p>
+        }
+      </div>
+    }
+
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" class="tabs__tab" [class.tabs__tab--on]="sideTab() === 'moves'" (click)="setSideTab('moves')">
+        Jugadas
+      </button>
+      <button type="button" role="tab" class="tabs__tab" [class.tabs__tab--on]="sideTab() === 'chat'" (click)="setSideTab('chat')">
+        <app-icon name="chat" /> Chat
+        @if (chat.unread()) {
+          <span class="tabs__count">{{ chat.unread() }}</span>
+        }
+      </button>
+    </div>
+
+    @if (sideTab() === 'moves') {
+      <app-move-list
+        class="side__moves"
+        [sans]="sans()"
+        [evaluations]="evaluations()"
+        [current]="currentPly()"
+        [showBadges]="feedback()"
+        (select)="goTo($event)"
+      />
+    } @else {
+      <app-chat
+        class="side__moves"
+        [messages]="chat.messages()"
+        [quickPhrases]="quickPhrases"
+        [disabled]="isFriend() && peer.status() !== 'playing'"
+        (send)="sendChat($event)"
+      />
+    }
+
+    <div class="nav-buttons">
+      <button type="button" class="btn btn--ghost btn--icon" (click)="goTo(-1)" title="Inicio"><app-icon name="first" /></button>
+      <button type="button" class="btn btn--ghost btn--icon" (click)="goTo(currentPly() - 1)" title="Anterior"><app-icon name="prev" /></button>
+      <button type="button" class="btn btn--ghost btn--icon" (click)="goTo(currentPly() + 1)" title="Siguiente"><app-icon name="next" /></button>
+      <button type="button" class="btn btn--ghost btn--icon" (click)="goTo(moves().length - 1)" title="Posición actual"><app-icon name="last" /></button>
+      <button type="button" class="btn btn--ghost btn--icon" (click)="flip()" title="Girar tablero"><app-icon name="flip" /></button>
+    </div>
+
+    <label class="toggle">
+      <input type="checkbox" [checked]="feedback()" (change)="toggleFeedback()" />
+      Calificar jugadas
+    </label>
+
+    @if (!end()) {
+      <div class="controls">
+        <button type="button" class="btn btn--ghost btn--small" (click)="offerDraw()"><app-icon name="scales" /> Tablas</button>
+        <button type="button" class="btn btn--danger btn--small" (click)="resign()">
+          <app-icon name="flag" /> {{ confirmResign() ? '¿Seguro?' : 'Rendirse' }}
+        </button>
+      </div>
+    } @else {
+      <div class="controls">
+        <a class="btn btn--small" [routerLink]="['/partidas', gameId(), 'resumen']">Resumen</a>
+        <a class="btn btn--ghost btn--small" [routerLink]="['/partidas', gameId(), 'revision']">Revisar</a>
+        <button type="button" class="btn btn--ghost btn--small" (click)="rematch()" [disabled]="rematchSent()">
+          {{ rematchOffered() ? 'Aceptar revancha' : rematchSent() ? 'Enviada' : 'Revancha' }}
+        </button>
+      </div>
+    }
+  </aside>
+</div>
+
+@if (showEndModal() && end(); as e) {
+  <div class="modal-backdrop" (click)="showEndModal.set(false)">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="panel end" [class.end--win]="e.score === 1" [class.panel--velvet]="e.score === 1">
+        <div class="ribbon">{{ e.score === 1 ? '¡Victoria!' : e.score === 0.5 ? 'Tablas' : 'Derrota' }}</div>
+        <div class="end__icon medallion">
+          <app-icon [name]="e.score === 1 ? 'laurels' : e.score === 0.5 ? 'scales' : 'flag'" />
+        </div>
+        <p class="end__reason">{{ e.termination }}</p>
+
+        <div class="end__loot">
+          @if (e.ratingDelta !== null) {
+            <div class="loot">
+              <app-icon name="trophy" />
+              <span [class.down]="e.ratingDelta < 0">{{ e.ratingDelta > 0 ? '+' : '' }}{{ e.ratingDelta }}</span>
+            </div>
+          }
+          <div class="loot loot--xp">
+            <app-icon name="gem" />
+            <span>+{{ e.xp }} XP</span>
+          </div>
+        </div>
+
+        <div class="end__actions">
+          <a class="btn" [routerLink]="['/partidas', gameId(), 'resumen']">Ver resumen</a>
+          <div class="end__row">
+            <a class="btn btn--ghost" [routerLink]="['/partidas', gameId(), 'revision']">Revisar</a>
+            <button type="button" class="btn btn--ghost" (click)="rematch()" [disabled]="rematchSent()">
+              {{ rematchOffered() ? 'Aceptar' : 'Revancha' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}

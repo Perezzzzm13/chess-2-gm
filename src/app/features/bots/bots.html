@@ -1,0 +1,66 @@
+<div class="page">
+  <header class="page-head">
+    <h1>Elige rival</h1>
+  </header>
+
+  <div class="layout">
+    <section class="bots">
+      @for (bot of bots; track bot.id) {
+        <button type="button" class="bot" [class.bot--selected]="selectedId() === bot.id" (click)="selectedId.set(bot.id)">
+          @if (isSuggested(bot)) {
+            <span class="bot__tag">¡para ti!</span>
+          }
+          <app-portrait [piece]="bot.piece" [tint]="bot.tint" [size]="76" />
+          <span class="bot__name">{{ bot.name }}</span>
+          <span class="bot__elo"><app-icon name="trophy" /> {{ bot.elo }}</span>
+        </button>
+      }
+    </section>
+
+    <aside class="setup panel panel--velvet">
+      <div class="setup__hero">
+        <app-portrait [piece]="selected().piece" [tint]="selected().tint" [size]="104" />
+        <div>
+          <h2 class="setup__name">{{ selected().name }}</h2>
+          <span class="setup__title">{{ selected().title }}</span>
+          <span class="chip"><app-icon name="trophy" /> {{ selected().elo }}</span>
+          <p class="setup__bio">{{ selected().bio }}</p>
+        </div>
+      </div>
+      <p class="parchment setup__quote">{{ selected().greeting }}</p>
+
+      <div class="field">
+        <label for="elo">Autómata a medida: {{ customElo() }}</label>
+        <input id="elo" type="range" [min]="minElo" [max]="maxElo" step="50" [value]="customElo()" (input)="onCustomElo($event)" />
+      </div>
+
+      <div class="field">
+        <label>Modo</label>
+        <app-variant-picker [(variant)]="variant" />
+      </div>
+
+      <div class="field">
+        <label>Juegas con</label>
+        <div class="colors">
+          @for (opt of colorOptions; track opt.value) {
+            <button type="button" class="color" [class.color--active]="color() === opt.value" (click)="color.set(opt.value)">
+              @if (opt.value === 'random') {
+                <app-icon name="dice" />
+              } @else {
+                <img [src]="'pieces/pixel/' + opt.value + 'K.webp'" alt="" />
+              }
+              {{ opt.label }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <label class="toggle">
+        <input type="checkbox" [checked]="feedback()" (change)="feedback.set(!feedback())" />
+        Calificar mis jugadas durante la partida
+      </label>
+
+      <button type="button" class="btn btn--big play" (click)="play()">¡A jugar!</button>
+    </aside>
+  </div>
+</div>

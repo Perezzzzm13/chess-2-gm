@@ -1,0 +1,408 @@
+@use 'mixins' as *;
+
+.profile-page {
+  display: grid;
+  gap: 28px;
+}
+
+/* ───── Cabecera del jugador ───── */
+.hero {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding: 28px 32px;
+}
+
+.hero__info {
+  flex: 1;
+  display: grid;
+  justify-items: start;
+  gap: 6px;
+  min-width: 0;
+}
+
+.hero__name {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+}
+
+.hero__edit {
+  width: 38px;
+}
+
+.hero__input {
+  min-height: 52px;
+  padding: 6px 14px;
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  line-height: 1;
+  @include parchment;
+}
+
+.hero__rank {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--neon-gold);
+}
+
+.hero__motto {
+  margin: 4px 0 6px;
+  padding: 6px 14px;
+  font-style: italic;
+  font-weight: 700;
+}
+
+.bars {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px 28px;
+  width: 100%;
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+}
+
+.bar__badge {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 46px;
+  height: 46px;
+  border: $px solid $outline;
+  background: #ffc845;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  line-height: 1;
+  color: #fff;
+  box-shadow:
+    inset 0 $px 0 rgba(255, 255, 255, 0.45),
+    inset 0 (-$px) 0 #b8740f;
+  @include outlined($w: 1.5px, $drop: 2px);
+  @include pixel-corners;
+
+  app-icon {
+    --icon-size: 26px;
+    --icon-stroke: #{$outline};
+  }
+}
+
+.bar__badge--level {
+  background: #2f7fd6;
+  box-shadow:
+    inset 0 $px 0 rgba(255, 255, 255, 0.4),
+    inset 0 (-$px) 0 #0f3466;
+}
+
+.bar__track {
+  flex: 1;
+  margin-left: -6px;
+
+  .progress {
+    height: 22px;
+  }
+
+  small {
+    display: block;
+    margin: 3px 0 0 12px;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    line-height: 1;
+    color: var(--text-muted);
+  }
+}
+
+/* ───── Contadores ───── */
+/* ───── Récords: pantalla de recreativa con líneas de barrido ───── */
+.scores {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0 40px;
+  padding: 18px 28px;
+  background:
+    repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.035) 0 2px, transparent 2px 4px),
+    #060203;
+  @include frame;
+}
+
+.scores__title {
+  margin: 0;
+  font-size: 3rem;
+  @include neon-text(var(--neon-red-glow), #ffe0e6);
+}
+
+.scores__list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px 36px;
+  margin: 0;
+
+  div {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  dt {
+    font-family: var(--font-display);
+    font-size: 1.45rem;
+    line-height: 1;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* Puntos suspensivos entre la etiqueta y la cifra */
+  div::after {
+    content: '';
+    order: 1;
+    flex: 1;
+    min-width: 12px;
+    border-bottom: $px dotted rgba(255, 210, 90, 0.35);
+  }
+
+  dd {
+    order: 2;
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.9rem;
+    line-height: 1;
+    color: var(--neon-gold);
+  }
+}
+
+@media (max-width: 900px) {
+  .scores {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .scores__list {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ───── Columnas ───── */
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+  gap: 28px;
+  align-items: start;
+}
+
+.stack {
+  display: grid;
+  gap: 28px;
+}
+
+.ladder {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ladder__item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 10px;
+  border: $px solid transparent;
+
+  strong {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    line-height: 1;
+  }
+}
+
+.ladder__elo {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  line-height: 1;
+  color: var(--text-muted);
+
+  app-icon {
+    --icon-size: 16px;
+    color: var(--neon-gold);
+  }
+}
+
+.ladder__item--current {
+  border-color: $outline;
+  background: #ffc845;
+  box-shadow:
+    inset 0 2px 0 rgba(255, 245, 200, 0.7),
+    inset 0 (-$px) 0 #b8740f;
+  @include pixel-corners;
+
+  strong {
+    color: #2a1204;
+  }
+
+  .ladder__elo {
+    color: #5a3008;
+
+    app-icon {
+      color: #5a3008;
+    }
+  }
+}
+
+.ladder__item--locked {
+  strong,
+  .ladder__elo {
+    color: var(--text-faint);
+  }
+}
+
+.games {
+  display: grid;
+  gap: 8px;
+}
+
+.game {
+  display: grid;
+  grid-template-columns: 92px auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  border: $px solid $outline;
+  background: rgba(6, 2, 3, 0.55);
+  @include pixel-corners;
+}
+
+/* Sello del resultado */
+.game__result {
+  padding: 1px 0 4px;
+  border: 2px solid $outline;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  line-height: 1;
+  text-align: center;
+  color: #fff;
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.25);
+  @include outlined($w: 1.5px, $drop: 1.5px);
+  @include pixel-corners(2px);
+}
+
+.game__result--win {
+  background: #4fa83a;
+}
+
+.game__result--loss {
+  background: #d8304d;
+}
+
+.game__result--draw {
+  background: #7a6a64;
+}
+
+.game__info {
+  display: grid;
+  min-width: 0;
+
+  strong {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-family: var(--font-display);
+    font-size: 1.45rem;
+    line-height: 1.05;
+  }
+
+  span {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+
+  b {
+    color: #8fe06a;
+
+    &.down {
+      color: #ff7d8c;
+    }
+  }
+}
+
+.game__links {
+  display: flex;
+  gap: 6px;
+
+  .btn--icon {
+    width: 40px;
+  }
+}
+
+.games__empty {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  padding: 12px;
+
+  p {
+    margin: 0;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+}
+
+.settings {
+  display: grid;
+  gap: 16px;
+  justify-items: start;
+}
+
+.credits {
+  margin: 20px 0 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-faint);
+
+  a {
+    color: var(--neon-gold);
+  }
+}
+
+@media (max-width: 900px) {
+  .columns {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .hero__info {
+    justify-items: center;
+  }
+
+  .game {
+    grid-template-columns: auto minmax(0, 1fr);
+
+    .game__result {
+      grid-column: 1 / -1;
+      justify-self: start;
+      padding-inline: 12px;
+    }
+
+    .game__links {
+      grid-column: 1 / -1;
+    }
+  }
+}

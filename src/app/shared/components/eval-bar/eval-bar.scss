@@ -1,0 +1,55 @@
+@use 'mixins' as *;
+
+:host {
+  display: flex;
+}
+
+.bar {
+  position: relative;
+  display: flex;
+  flex-direction: column-reverse;
+  width: 28px;
+  overflow: hidden;
+  border: $px solid $outline;
+  background: #12070a;
+  box-shadow: inset 0 0 0 2px #5e4317;
+  @include pixel-corners;
+}
+
+.bar--flipped {
+  flex-direction: column;
+}
+
+.bar__white {
+  background: linear-gradient(90deg, #fff6e0 0 70%, #e2cc9c 70%);
+  transition: height 0.6s steps(10);
+}
+
+.bar__label {
+  position: absolute;
+  top: 6px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  z-index: 1;
+  font-family: var(--font-display);
+  font-size: 15px;
+  line-height: 1;
+  color: var(--neon-ivory);
+}
+
+.bar__label--white {
+  top: auto;
+  bottom: 6px;
+  color: #2c1a0c;
+}
+
+.bar--flipped .bar__label {
+  top: auto;
+  bottom: 6px;
+}
+
+.bar--flipped .bar__label--white {
+  top: 6px;
+  bottom: auto;
+}

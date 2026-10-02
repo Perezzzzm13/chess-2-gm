@@ -1,0 +1,474 @@
+@use 'mixins' as *;
+
+:host {
+  display: contents;
+  --gold: #ffd25a;
+  --crimson: #ff3b5c;
+}
+
+/* Tiras de marcador: chapa negra con remaches de píxel, encima y debajo del tablero */
+.strip {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 12px;
+  border: $px solid $outline;
+  background: #0c050b;
+  /* Tubo de neón por dentro de la chapa (por fuera lo recortarían las esquinas de píxel) */
+  box-shadow:
+    inset 0 0 0 2px var(--tube),
+    inset 0 0 0 3px rgba(255, 255, 255, 0.18),
+    inset 0 0 14px var(--tube-glow);
+  font-family: var(--font-pixel);
+  @include pixel-corners($px, 2);
+}
+
+/* El anfitrión no genera caja: las tiras se colocan en la rejilla de la arena, una encima y otra debajo del tablero */
+.strip--top {
+  order: 0;
+  --tube: var(--gold);
+  --tube-glow: rgba(255, 196, 64, 0.35);
+}
+
+.strip--bottom {
+  order: 2;
+  --tube: var(--crimson);
+  --tube-glow: rgba(255, 40, 80, 0.35);
+}
+
+.label {
+  font-size: 1.15rem;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #a58fa0;
+}
+
+/* Barras: un fondo hundido y un relleno que se escala (solo transform: no repinta) */
+.meter {
+  position: relative;
+  height: 12px;
+  border: 2px solid $outline;
+  background: #08030a;
+  overflow: hidden;
+
+  span {
+    position: absolute;
+    inset: 0;
+    transform-origin: left;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.6) 0 2px, transparent 2px),
+      var(--fill, var(--gold));
+    box-shadow: inset 0 -3px 6px rgba(255, 255, 255, 0.25);
+  }
+}
+
+/* ───── Tiempo ───── */
+.time {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.time__num {
+  min-width: 2ch;
+  font-size: 2.6rem;
+  line-height: 0.8;
+  text-align: right;
+  @include neon-text(rgba(255, 196, 64, 0.55));
+}
+
+.meter--time {
+  flex: 1;
+  --fill: var(--gold);
+}
+
+.time--low {
+  .time__num {
+    @include neon-text(rgba(255, 40, 80, 0.7), #ffd6dd);
+    animation: tick 0.5s steps(2) infinite;
+  }
+
+  .meter {
+    --fill: var(--crimson);
+  }
+}
+
+@keyframes tick {
+  50% {
+    opacity: 0.55;
+  }
+}
+
+/* ───── Oro ───── */
+.gold {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 2.3rem;
+  line-height: 0.8;
+  @include neon-text(rgba(255, 196, 64, 0.6), #fff3c4);
+
+  app-icon {
+    --icon-size: 26px;
+    --icon-stroke: #{$outline};
+    color: var(--gold);
+  }
+}
+
+/* ───── Combo: grande, ladeado y con mecha ───── */
+.combo {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  min-width: 78px;
+  padding-bottom: 6px;
+  opacity: 0.25;
+  transition: opacity 0.12s steps(2);
+}
+
+.combo--on {
+  opacity: 1;
+}
+
+.combo__num {
+  display: block;
+  font-size: 2.4rem;
+  line-height: 0.8;
+  color: var(--crimson);
+  @include outlined($w: 2px, $drop: 3px);
+}
+
+.combo--on .combo__num {
+  @include neon-text(rgba(255, 40, 80, 0.7), #ffe3e8);
+}
+
+.combo__label {
+  font-size: 0.95rem;
+  line-height: 1;
+  text-transform: uppercase;
+  color: #a58fa0;
+}
+
+.combo__fuse {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 0;
+  height: 3px;
+  background: var(--crimson);
+  box-shadow: 0 0 6px var(--crimson);
+  transform-origin: left;
+}
+
+/* ───── Pausa ───── */
+.pause {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border: $px solid $outline;
+  background: #2a1620;
+  cursor: pointer;
+  @include pixel-corners;
+
+  i {
+    width: 5px;
+    height: 16px;
+    background: #d9c4cf;
+  }
+
+}
+
+/* ───── Stamina ───── */
+.stamina {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+
+  .label {
+    min-width: 5.2ch;
+  }
+}
+
+.pips {
+  display: flex;
+  gap: 3px;
+  flex-wrap: wrap;
+}
+
+.pip {
+  position: relative;
+  width: 12px;
+  height: 18px;
+  border: 2px solid $outline;
+  background: #08030a;
+
+  i {
+    position: absolute;
+    inset: 0;
+    transform-origin: bottom;
+    background:
+      linear-gradient(90deg, rgba(255, 255, 255, 0.5) 0 2px, transparent 2px),
+      #5fe0a0;
+  }
+}
+
+.meter--stamina {
+  flex: 1;
+  --fill: #5fe0a0;
+}
+
+.stamina--tired {
+  .label {
+    color: var(--crimson);
+    animation: tick 0.4s steps(2) infinite;
+  }
+
+  .pip i {
+    background: #7a4a55;
+  }
+}
+
+/* ───── Frenesí ───── */
+/* Habilidades: una baldosa por pieza que se va llenando desde abajo */
+.skills {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.skill {
+  --skill: #2fc4ef;
+  position: relative;
+  width: 46px;
+  height: 46px;
+  padding: 0;
+  border: $px solid $outline;
+  background: #120810;
+  overflow: hidden;
+  @include pixel-corners;
+
+  &:active {
+    transform: translateY($px);
+  }
+}
+
+.skill--bishop {
+  --skill: #ff59c7;
+}
+
+.skill--castle {
+  --skill: #f4f0ff;
+}
+
+.skill__fill {
+  position: absolute;
+  inset: 0;
+  background: var(--skill);
+  opacity: 0.22;
+  transform-origin: bottom;
+}
+
+.skill__piece {
+  position: relative;
+  width: 32px;
+  margin-top: 4px;
+  image-rendering: pixelated;
+  opacity: 0.35;
+}
+
+.skill__key {
+  position: absolute;
+  right: 2px;
+  bottom: 0;
+  font-family: var(--font-pixel);
+  font-size: 0.95rem;
+  line-height: 1;
+  color: #8a6070;
+}
+
+.skill__count {
+  position: absolute;
+  top: 1px;
+  left: 3px;
+  font-family: var(--font-pixel);
+  font-size: 1rem;
+  line-height: 1;
+  color: var(--skill);
+}
+
+/* Lista: la baldosa se enciende con un filete del color de la pieza */
+.skill--ready {
+  box-shadow: inset 0 0 0 2px var(--skill);
+
+  .skill__fill {
+    opacity: 0.16;
+  }
+
+  .skill__piece {
+    opacity: 1;
+  }
+
+  .skill__key {
+    color: var(--skill);
+  }
+}
+
+.gold--rush span {
+  color: #f5e03a;
+  animation: rush 0.3s steps(2) infinite;
+}
+
+@keyframes rush {
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.frenzy {
+  position: relative;
+  flex: 0 0 auto;
+  min-width: 190px;
+  height: 44px;
+  padding: 0 14px;
+  border: $px solid $outline;
+  background: #1a0a10;
+  color: #8a6070;
+  font-family: var(--font-pixel);
+  font-size: 1.6rem;
+  line-height: 1;
+  text-transform: uppercase;
+  overflow: hidden;
+  cursor: default;
+  @include pixel-corners;
+
+  app-icon {
+    --icon-size: 20px;
+  }
+
+  kbd {
+    padding: 1px 5px 2px;
+    border: 2px solid currentColor;
+    font-family: inherit;
+    font-size: 0.9rem;
+  }
+}
+
+.frenzy__fill {
+  position: absolute;
+  inset: 0;
+  transform-origin: left;
+  background: repeating-linear-gradient(-45deg, #6e1024 0 6px, #561020 6px 12px);
+}
+
+.frenzy__text {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.frenzy--ready {
+  color: #fff;
+  cursor: pointer;
+  animation: ready 0.6s steps(2) infinite;
+
+  .frenzy__fill {
+    background: repeating-linear-gradient(-45deg, #ff3b5c 0 6px, #d42146 6px 12px);
+  }
+}
+
+.frenzy--active {
+  color: #fff;
+
+  .frenzy__fill {
+    background: repeating-linear-gradient(-45deg, #ffd25a 0 6px, #ff8a2a 6px 12px);
+  }
+
+  .frenzy__text {
+    color: #fff;
+    @include outlined($w: 2px, $drop: 2px);
+  }
+}
+
+@keyframes ready {
+  50% {
+    filter: brightness(1.35);
+  }
+}
+
+@media (max-width: 600px) {
+  /* En el móvil las habilidades bajan a su propia fila, a mano del pulgar */
+  .strip--bottom {
+    flex-wrap: wrap;
+  }
+
+  .skills {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .skill {
+    width: 52px;
+    height: 52px;
+  }
+
+  .skill__piece {
+    width: 36px;
+  }
+
+  .strip {
+    gap: 10px;
+    padding: 6px 8px;
+  }
+
+  .time__num,
+  .gold,
+  .combo__num {
+    font-size: 1.9rem;
+  }
+
+  .combo {
+    min-width: 56px;
+  }
+
+  .frenzy {
+    min-width: 0;
+    flex: 1;
+    font-size: 1.35rem;
+
+    kbd {
+      display: none;
+    }
+  }
+
+  .stamina {
+    flex: 1.2;
+
+    .label {
+      display: none;
+    }
+  }
+
+  .pip {
+    width: 9px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .frenzy--ready,
+  .time--low .time__num,
+  .stamina--tired .label {
+    animation: none;
+  }
+}

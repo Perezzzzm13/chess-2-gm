@@ -1,0 +1,171 @@
+// Mixins del estilo "neón real + píxel": cantos duros, esquinas escalonadas y letreros de neón.
+// Se importan en cualquier componente con: @use 'mixins' as *;
+
+$outline: #0b0406;
+/** Tamaño de un "píxel" del interfaz: bordes, escalones y cantos son múltiplos suyos. */
+$px: 3px;
+
+/* Texto con contorno oscuro y sombra dura, como los títulos de los juegos de píxeles */
+@mixin outlined($color: $outline, $w: 2px, $drop: 3px) {
+  text-shadow:
+    (-$w) (-$w) 0 $color,
+    0 (-$w) 0 $color,
+    $w (-$w) 0 $color,
+    $w 0 0 $color,
+    $w $w 0 $color,
+    0 $w 0 $color,
+    (-$w) $w 0 $color,
+    (-$w) 0 0 $color,
+    0 $drop 0 $color;
+}
+
+/* Esquinas escalonadas: recorta un píxel en cada esquina (dos escalones con $steps: 2) */
+@mixin pixel-corners($s: $px, $steps: 1) {
+  @if $steps == 1 {
+    clip-path: polygon(
+      #{$s} 0,
+      calc(100% - #{$s}) 0,
+      calc(100% - #{$s}) #{$s},
+      100% #{$s},
+      100% calc(100% - #{$s}),
+      calc(100% - #{$s}) calc(100% - #{$s}),
+      calc(100% - #{$s}) 100%,
+      #{$s} 100%,
+      #{$s} calc(100% - #{$s}),
+      0 calc(100% - #{$s}),
+      0 #{$s},
+      #{$s} #{$s}
+    );
+  } @else {
+    $d: $s * 2;
+    clip-path: polygon(
+      #{$d} 0,
+      calc(100% - #{$d}) 0,
+      calc(100% - #{$d}) #{$s},
+      calc(100% - #{$s}) #{$s},
+      calc(100% - #{$s}) #{$d},
+      100% #{$d},
+      100% calc(100% - #{$d}),
+      calc(100% - #{$s}) calc(100% - #{$d}),
+      calc(100% - #{$s}) calc(100% - #{$s}),
+      calc(100% - #{$d}) calc(100% - #{$s}),
+      calc(100% - #{$d}) 100%,
+      #{$d} 100%,
+      #{$d} calc(100% - #{$s}),
+      #{$s} calc(100% - #{$s}),
+      #{$s} calc(100% - #{$d}),
+      0 calc(100% - #{$d}),
+      0 #{$d},
+      #{$s} #{$d},
+      #{$s} #{$s},
+      #{$d} #{$s}
+    );
+  }
+}
+
+/* Marco de los paneles: noche con filete dorado apagado y bisel de un píxel */
+@mixin frame {
+  border: $px solid $outline;
+  box-shadow:
+    inset 0 0 0 $px #5e4317,
+    inset 0 ($px * 2) 0 $px rgba(255, 220, 160, 0.07),
+    inset 0 (-$px * 2) 0 $px rgba(0, 0, 0, 0.35);
+  @include pixel-corners($px, 2);
+}
+
+/* Botón de píxel: color plano, canto inferior que se hunde al pulsar */
+@mixin chunky($face, $edge, $light: rgba(255, 255, 255, 0.35)) {
+  border: $px solid $outline;
+  background: $face;
+  box-shadow:
+    inset 0 (-$px * 2) 0 $edge,
+    inset 0 $px 0 $light;
+  transition:
+    transform 0.06s steps(2),
+    box-shadow 0.06s steps(2);
+  @include pixel-corners;
+
+  /* Sin efecto al pasar el ratón: como un botón de recreativa, solo se hunde al pulsarlo */
+  &:active:not(:disabled) {
+    transform: translateY($px);
+    box-shadow:
+      inset 0 (-$px) 0 $edge,
+      inset 0 $px 0 $light;
+  }
+}
+
+/* Cartel de papel pegado en la pared, para textos largos y avisos */
+@mixin parchment {
+  border: $px solid $outline;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0 $px, transparent $px),
+    #efdcae;
+  color: #2c1a0c;
+  box-shadow: inset 0 (-$px * 2) 0 rgba(150, 100, 40, 0.35);
+  @include pixel-corners;
+}
+
+/* Letrero de neón: núcleo claro y resplandor del color. En pocos elementos: el resplandor cuesta pintarlo */
+@mixin neon-text($glow: var(--neon-gold-glow), $core: var(--neon-ivory)) {
+  color: $core;
+  text-shadow:
+    0 0 1px #fff,
+    0 0 6px $glow,
+    0 0 16px $glow,
+    0 0 32px $glow;
+}
+
+/* Tubo de neón alrededor de una caja */
+@mixin neon-box($color: var(--neon-gold), $glow: var(--neon-gold-glow)) {
+  border: 2px solid $color;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.25),
+    0 0 10px $glow,
+    0 0 26px $glow,
+    inset 0 0 14px $glow;
+}
+
+/*
+ * Cursor de selección de recreativa: cuatro esquinas de píxel que aparecen al apuntar y laten.
+ * Sustituye al típico "levantar la tarjeta" al pasar el ratón. Usa el ::after del elemento.
+ */
+@mixin selector($color: var(--neon-gold), $inset: 6px, $arm: 14px, $w: $px, $position: relative) {
+  position: $position;
+  cursor: pointer;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: $inset;
+    z-index: 2;
+    background:
+      linear-gradient($color 0 0) top left / #{$arm} #{$w} no-repeat,
+      linear-gradient($color 0 0) top left / #{$w} #{$arm} no-repeat,
+      linear-gradient($color 0 0) top right / #{$arm} #{$w} no-repeat,
+      linear-gradient($color 0 0) top right / #{$w} #{$arm} no-repeat,
+      linear-gradient($color 0 0) bottom left / #{$arm} #{$w} no-repeat,
+      linear-gradient($color 0 0) bottom left / #{$w} #{$arm} no-repeat,
+      linear-gradient($color 0 0) bottom right / #{$arm} #{$w} no-repeat,
+      linear-gradient($color 0 0) bottom right / #{$w} #{$arm} no-repeat;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  &:hover::after,
+  &:focus-visible::after {
+    opacity: 1;
+    animation: selector-beat 0.9s steps(2) infinite;
+  }
+}
+
+/* Al apuntar, el texto se enciende como un tubo de neón (sin moverse ni cambiar de tamaño) */
+@mixin neon-hover($glow: var(--neon-gold-glow)) {
+  &:hover,
+  &:focus-visible {
+    color: var(--neon-ivory);
+    text-shadow:
+      0 0 1px #fff,
+      0 0 8px $glow,
+      0 0 18px $glow;
+  }
+}

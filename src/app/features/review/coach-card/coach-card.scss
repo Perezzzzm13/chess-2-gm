@@ -1,0 +1,188 @@
+@use 'mixins' as *;
+
+.coach {
+  display: grid;
+  gap: 12px;
+  padding: 14px 16px 16px;
+  border: $px solid $outline;
+  border-top: ($px * 3) solid var(--accent);
+  background: #efdcae;
+  color: #2c1a0c;
+  box-shadow:
+    inset 0 $px 0 rgba(255, 255, 255, 0.35),
+    inset 0 (-$px * 2) 0 rgba(150, 100, 40, 0.3);
+  @include pixel-corners;
+}
+
+.coach__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.coach__title {
+  display: grid;
+}
+
+.coach__label {
+  font-family: var(--font-display);
+  font-size: 2.3rem;
+  line-height: 0.95;
+  color: var(--accent);
+  @include outlined($w: 1.5px, $drop: 2px);
+}
+
+.coach__move {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+
+  b {
+    font-size: 1.1rem;
+  }
+}
+
+.coach__who {
+  padding: 0 6px 1px;
+  border: 2px solid $outline;
+  background: #6a5a4a;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  line-height: 1.05;
+  color: #fff;
+  @include pixel-corners(2px);
+}
+
+.coach__who--me {
+  background: #4fa83a;
+}
+
+/* Probabilidad de ganar */
+.odds {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.odds__label {
+  color: #6b4a2a;
+}
+
+.odds__bar {
+  position: relative;
+  height: 14px;
+  border: 2px solid $outline;
+  background: #d8c194;
+  overflow: hidden;
+}
+
+.odds__fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: linear-gradient(180deg, #c8f590 0 3px, #6cc13f 3px);
+}
+
+/* Lo que se ha perdido con la jugada, rayado en rojo */
+.odds__lost {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(135deg, #d8352a 0 4px, #f0705f 4px 8px);
+}
+
+.odds__numbers b {
+  font-size: 1.05rem;
+}
+
+.coach__text {
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+/* Jugada hecha frente a la mejor */
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.compare__item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 2px solid rgba(44, 26, 12, 0.35);
+  background: rgba(255, 255, 255, 0.35);
+  font: inherit;
+  font-weight: 700;
+  color: inherit;
+  cursor: pointer;
+
+  strong {
+    margin-left: auto;
+    font-size: 1.05rem;
+  }
+
+  &.compare__item--on {
+    border-color: $outline;
+    background: rgba(255, 255, 255, 0.7);
+  }
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border: 2px solid $outline;
+}
+
+.dot--played {
+  background: #d8352a;
+}
+
+.dot--best {
+  background: #5fae2e;
+}
+
+.line {
+  display: grid;
+  gap: 4px;
+}
+
+.line__label {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  line-height: 1;
+  color: #6b4a2a;
+}
+
+.line__moves {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.line__move {
+  padding: 2px 8px;
+  border: 0;
+  background: rgba(44, 26, 12, 0.1);
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: inherit;
+  cursor: pointer;
+}
+
+.line__move--on {
+  background: #4fa83a;
+  color: #fff;
+  box-shadow: inset 0 -2px 0 #2f7a1c;
+}
+
+.coach__retry {
+  justify-self: start;
+}

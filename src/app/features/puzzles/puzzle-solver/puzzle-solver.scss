@@ -1,0 +1,256 @@
+@use 'mixins' as *;
+
+.solver {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 390px;
+  gap: 28px;
+  align-items: start;
+}
+
+.arena {
+  display: flex;
+  justify-content: center;
+
+  app-board {
+    width: min(100%, calc(100vh - var(--header-height) - 80px));
+    min-width: 280px;
+  }
+}
+
+.side {
+  display: grid;
+  gap: 18px;
+}
+
+.card {
+  display: grid;
+  gap: 14px;
+}
+
+.card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: -4px 0 -2px;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  line-height: 1;
+  color: var(--text-muted);
+  text-decoration: none;
+
+  app-icon {
+    --icon-size: 18px;
+  }
+
+  @include neon-hover;
+}
+
+.card__where {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  line-height: 1;
+  color: var(--text-faint);
+
+  strong {
+    color: var(--neon-gold);
+  }
+}
+
+.replay {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 8px 12px;
+  border: 2px solid $outline;
+  background: rgba(6, 2, 3, 0.55);
+  font-weight: 700;
+  color: var(--text-muted);
+
+  app-icon {
+    --icon-size: 20px;
+    flex: none;
+    color: var(--neon-gold);
+  }
+}
+
+.card__turn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 2.4rem;
+
+  img {
+    width: 42px;
+    height: 42px;
+  }
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+
+  app-icon {
+    --icon-size: 16px;
+  }
+}
+
+/* Estado: pergamino que cambia de color según el resultado */
+.status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 66px;
+  padding: 10px 14px;
+  @include parchment;
+
+  p {
+    margin: 0;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+}
+
+.status__icon {
+  --icon-size: 38px;
+  color: #a3172a;
+}
+
+.status--wrong {
+  background: #f6c4b4;
+  animation: shake 0.3s steps(4);
+}
+
+.status--solved {
+  background: #d4ecb0;
+
+  .status__icon {
+    color: #3f7d1f;
+    animation: bounce 0.4s steps(4);
+  }
+}
+
+@keyframes shake {
+  25% {
+    transform: translateX(-6px);
+  }
+  75% {
+    transform: translateX(6px);
+  }
+}
+
+@keyframes bounce {
+  from {
+    transform: scale(0.3);
+  }
+}
+
+.delta {
+  margin: -4px 0 0;
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  line-height: 1;
+  text-align: center;
+  @include neon-text(rgba(120, 230, 90, 0.6), #d9ffc4);
+
+  &.down {
+    @include neon-text(var(--neon-red-glow), #ffd6dc);
+  }
+}
+
+.actions {
+  display: grid;
+  gap: 10px;
+}
+
+.actions__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+/* Contadores tipo marcador */
+.counters {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.counter {
+  display: grid;
+  justify-items: center;
+  padding: 10px 6px 8px;
+  background: linear-gradient(180deg, #1d0c11, #140709);
+  @include frame;
+
+  app-icon {
+    --icon-size: 30px;
+    color: var(--neon-gold);
+    --icon-stroke: #{$outline};
+  }
+
+  strong {
+    font-family: var(--font-display);
+    font-size: 2.4rem;
+    line-height: 1;
+    color: var(--neon-ivory);
+    @include outlined;
+  }
+
+  span {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    line-height: 1;
+    color: var(--text-faint);
+  }
+}
+
+.counter__green {
+  color: #8fe06a !important;
+}
+
+.counter__fire {
+  color: #5a4448 !important;
+}
+
+.counter--hot .counter__fire {
+  color: #ff8a2a !important;
+  animation: flicker 1.2s steps(3) infinite alternate;
+}
+
+@keyframes flicker {
+  to {
+    transform: scale(1.12) rotate(-4deg);
+  }
+}
+
+.credit {
+  margin: 0;
+  font-size: 0.9rem;
+  text-align: center;
+  color: var(--text-faint);
+}
+
+@media (max-width: 900px) {
+  .solver {
+    grid-template-columns: 1fr;
+  }
+
+  .arena app-board {
+    width: min(100%, 600px);
+    min-width: 0;
+  }
+
+  .side {
+    padding-top: 34px;
+  }
+}

@@ -1,0 +1,219 @@
+@use 'mixins' as *;
+
+.trainer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 410px;
+  gap: 28px;
+  align-items: start;
+}
+
+.arena {
+  display: flex;
+  justify-content: center;
+
+  app-board {
+    width: min(100%, calc(100vh - var(--header-height) - 80px));
+    min-width: 280px;
+  }
+}
+
+.side {
+  display: grid;
+  gap: 16px;
+}
+
+.trainer__name {
+  margin: 0;
+  font-size: 2.3rem;
+  @include neon-text;
+}
+
+.side__top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .segmented {
+    flex: 1;
+
+    button {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+  }
+}
+
+.lesson {
+  min-height: 130px;
+  padding: 12px 16px;
+  @include parchment;
+
+  p {
+    margin: 0;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+}
+
+.lesson--good {
+  background: #d4ecb0;
+}
+
+.lesson--bad {
+  background: #f6c4b4;
+  animation: shake 0.3s steps(4);
+}
+
+.lesson__move {
+  margin-bottom: 4px !important;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  line-height: 1;
+  color: #a3172a;
+}
+
+@keyframes shake {
+  25% {
+    transform: translateX(-6px);
+  }
+  75% {
+    transform: translateX(6px);
+  }
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.nav__count {
+  min-width: 64px;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  line-height: 1;
+  color: var(--neon-ivory);
+  @include outlined;
+
+  small {
+    font-size: 1.3rem;
+    color: var(--text-muted);
+  }
+}
+
+.mistakes {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  line-height: 1;
+  color: var(--text-muted);
+}
+
+.mistakes__marks {
+  display: flex;
+  gap: 6px;
+
+  i {
+    width: 22px;
+    height: 22px;
+    border: $px solid $outline;
+    background: #2a1219;
+    box-shadow: inset 0 $px 0 rgba(0, 0, 0, 0.5);
+    @include pixel-corners(2px);
+
+    &.on {
+      background: var(--neon-red);
+      box-shadow:
+        inset 0 2px 0 rgba(255, 255, 255, 0.4),
+        inset 0 -3px 0 rgba(80, 0, 20, 0.5);
+    }
+  }
+}
+
+.done {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  text-align: center;
+
+  h3 {
+    margin: 0;
+    font-size: 2.8rem;
+    @include neon-text;
+  }
+
+  p {
+    margin: 0;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+}
+
+.done__stars {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+
+  app-icon {
+    --icon-size: 54px;
+    color: var(--neon-gold);
+    --icon-stroke: #{$outline};
+    animation: star-pop 0.4s steps(4) backwards;
+
+    &:nth-child(2) {
+      --icon-size: 70px;
+      animation-delay: 0.15s;
+    }
+
+    &:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+
+    &.off {
+      color: #3d262b;
+    }
+  }
+}
+
+@keyframes star-pop {
+  from {
+    transform: scale(0);
+  }
+}
+
+.done__actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.empty {
+  grid-column: 1 / -1;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  max-width: 480px;
+  margin: 40px auto 0;
+}
+
+@media (max-width: 900px) {
+  .trainer {
+    grid-template-columns: 1fr;
+  }
+
+  .arena app-board {
+    width: min(100%, 600px);
+    min-width: 0;
+  }
+
+  .side {
+    margin-top: 34px;
+  }
+}

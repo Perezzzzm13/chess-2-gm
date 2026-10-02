@@ -1,0 +1,209 @@
+/*
+ * Temas de tablero. Cada tema define variables que consume el componente Board:
+ *  --sq-light / --sq-dark         fondo de las casillas (admite texturas con gradientes)
+ *  --frame / --frame-ring         fondo del marco y color del ribete entre los dos contornos
+ *  --frame-glow / --frame-anim    resplandor exterior del marco y su animación (solo opacidad)
+ *  --coord-light / --coord-dark   color de las coordenadas
+ *  --last-move / --last-ring      resaltado de la última jugada (relleno y filete interior)
+ *  --selected / --selected-ring   casilla seleccionada
+ *  --target                       puntos de destino y esquinas de captura
+ * y opcionalmente un decorado en .board__fx (encima de las casillas, sin recibir clics).
+ * Las piezas de cada tema están en public/pieces/<tema>/ (scripts/build-pieces.mjs).
+ */
+
+/* ───── Neón: tinta negra con la rejilla encendida ───── */
+.board-theme-neon {
+  --sq-light: #26131e;
+  --sq-dark: #12070e;
+  --frame: #0b0406;
+  --frame-ring: #ffd25a;
+  --frame-glow: 0 0 10px rgba(255, 196, 64, 0.7), 0 0 28px rgba(255, 196, 64, 0.35);
+  --frame-anim: tube-flicker 9s steps(1) infinite;
+  --coord-light: rgba(255, 210, 90, 0.6);
+  --coord-dark: rgba(255, 210, 90, 0.45);
+  --last-move: rgba(255, 210, 90, 0.08);
+  --last-ring: inset 0 0 0 2px rgba(255, 210, 90, 0.9), inset 0 0 14px rgba(255, 196, 64, 0.45);
+  --selected: rgba(255, 59, 92, 0.12);
+  --selected-ring: inset 0 0 0 2px #ff3b5c, inset 0 0 14px rgba(255, 40, 80, 0.5);
+  --target: rgba(255, 210, 90, 0.6);
+
+  .board__fx {
+    background:
+      linear-gradient(to right, rgba(255, 210, 90, 0.14) 1px, transparent 1px) 0 0 / 12.5% 100%,
+      linear-gradient(to bottom, rgba(255, 210, 90, 0.14) 1px, transparent 1px) 0 0 / 100% 12.5%;
+  }
+}
+
+/* ───── Píxel: casillas planas con trama de dos tonos, como una recreativa ───── */
+.board-theme-pixel {
+  --sq-light: repeating-conic-gradient(#e8c08a 0 25%, #edc995 0 50%) 0 0 / 6px 6px;
+  --sq-dark: repeating-conic-gradient(#9c5f3c 0 25%, #a56842 0 50%) 0 0 / 6px 6px;
+  --frame: #4a2a18;
+  --frame-ring: #d9a04a;
+  --coord-light: #8a4f2e;
+  --coord-dark: #f2d7a8;
+  --last-move: rgba(255, 236, 110, 0.5);
+  --selected: rgba(120, 230, 90, 0.5);
+  --target: rgba(40, 20, 10, 0.45);
+}
+
+/* ───── Madera: el clásico, sin adornos ───── */
+.board-theme-wood {
+  --sq-light:
+    repeating-linear-gradient(97deg, rgba(120, 70, 20, 0.07) 0 2px, transparent 2px 9px),
+    linear-gradient(135deg, #f0d4a6, #e2bd85);
+  --sq-dark:
+    repeating-linear-gradient(83deg, rgba(40, 18, 4, 0.16) 0 3px, transparent 3px 11px),
+    linear-gradient(135deg, #a8693a, #8a5129);
+  --frame: #3a1d0c;
+  --frame-ring: #c8964f;
+  --coord-light: #8a5129;
+  --coord-dark: #f0d4a6;
+  --last-move: rgba(255, 214, 92, 0.42);
+  --selected: rgba(255, 214, 92, 0.55);
+}
+
+/* ───── Graffiti: hormigón y asfalto, cinta de obra y pintadas encima ───── */
+.board-theme-graffiti {
+  --sq-light:
+    radial-gradient(circle at 30% 40%, rgba(0, 0, 0, 0.13) 0 1px, transparent 1.6px) 0 0 / 7px 7px,
+    radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.3) 0 1px, transparent 1.6px) 0 0 / 11px 11px,
+    #bdb8ae;
+  --sq-dark:
+    radial-gradient(circle at 40% 30%, rgba(255, 255, 255, 0.09) 0 1px, transparent 1.6px) 0 0 / 6px 6px,
+    #2c2a33;
+  --frame: repeating-linear-gradient(-45deg, #f5e03a 0 12px, #0b0406 12px 24px);
+  --frame-ring: #ffffff;
+  --coord-light: #2c2a33;
+  --coord-dark: #f5e03a;
+  --last-move: rgba(255, 47, 134, 0.22);
+  --last-ring: inset 0 0 0 3px #ff2f86;
+  --selected: rgba(245, 224, 58, 0.3);
+  --selected-ring: inset 0 0 0 3px #f5e03a;
+  --target: rgba(255, 47, 134, 0.75);
+
+  /* Dos pintadas de spray sobre el tablero, tenues para no tapar las piezas */
+  .board__fx {
+    &::before,
+    &::after {
+      position: absolute;
+      font-family: var(--font-spray);
+      line-height: 1;
+      opacity: 0.2;
+      pointer-events: none;
+    }
+
+    &::before {
+      content: 'GM';
+      top: 28%;
+      left: 18%;
+      font-size: 34cqw;
+      color: #ff2f86;
+      transform: rotate(-14deg);
+    }
+
+    &::after {
+      content: 'jaque!';
+      right: 6%;
+      bottom: 8%;
+      font-size: 11cqw;
+      color: #f5e03a;
+      transform: rotate(8deg);
+    }
+  }
+}
+
+/* ───── Synthwave: rejilla infinita bajo un atardecer, con una línea de barrido ───── */
+.board-theme-synth {
+  --sq-light: linear-gradient(180deg, #2e1258, #241048);
+  --sq-dark: linear-gradient(180deg, #160830, #0e0420);
+  --frame: linear-gradient(180deg, #ffd25a 0%, #ff6a8a 40%, #b02fd0 72%, #2a1150 100%);
+  --frame-ring: #62f2ff;
+  --frame-glow: 0 0 10px rgba(98, 242, 255, 0.7), 0 0 26px rgba(255, 47, 168, 0.35);
+  --coord-light: rgba(98, 242, 255, 0.75);
+  --coord-dark: rgba(255, 89, 199, 0.75);
+  --last-move: rgba(98, 242, 255, 0.1);
+  --last-ring: inset 0 0 0 2px #62f2ff, inset 0 0 12px rgba(98, 242, 255, 0.5);
+  --selected: rgba(255, 47, 168, 0.15);
+  --selected-ring: inset 0 0 0 2px #ff59c7, inset 0 0 12px rgba(255, 47, 168, 0.5);
+  --target: rgba(98, 242, 255, 0.7);
+
+  .board__fx {
+    overflow: hidden;
+    background:
+      linear-gradient(to right, rgba(255, 47, 168, 0.32) 1px, transparent 1px) 0 0 / 12.5% 100%,
+      linear-gradient(to bottom, rgba(255, 47, 168, 0.32) 1px, transparent 1px) 0 0 / 100% 12.5%;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0 0 auto;
+      height: 18%;
+      background: linear-gradient(180deg, transparent, rgba(98, 242, 255, 0.1) 60%, rgba(98, 242, 255, 0.22) 100%);
+      animation: scan 6s linear infinite;
+    }
+  }
+}
+
+/* ───── Trono: oro contra obsidiana, con un destello que recorre el tablero ───── */
+.board-theme-throne {
+  --sq-light: linear-gradient(135deg, #2e2412, #221a0c);
+  --sq-dark: #070605;
+  --frame: #0b0806;
+  --frame-ring: #e6b84a;
+  --frame-glow: 0 0 8px rgba(255, 200, 80, 0.6), 0 0 24px rgba(255, 200, 80, 0.3);
+  --coord-light: rgba(230, 184, 74, 0.75);
+  --coord-dark: rgba(230, 184, 74, 0.5);
+  --last-move: rgba(230, 184, 74, 0.12);
+  --last-ring: inset 0 0 0 2px #e6b84a, inset 0 0 12px rgba(255, 200, 80, 0.4);
+  --selected: rgba(255, 246, 208, 0.12);
+  --selected-ring: inset 0 0 0 2px #fff6d0;
+  --target: rgba(230, 184, 74, 0.7);
+
+  .board__fx {
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 40%;
+      background: linear-gradient(110deg, transparent 30%, rgba(255, 220, 130, 0.13) 50%, transparent 70%);
+      animation: glint 9s linear infinite;
+    }
+  }
+}
+
+/* El tubo de neón falla un instante de vez en cuando */
+@keyframes tube-flicker {
+  0%,
+  93%,
+  95%,
+  97%,
+  100% {
+    opacity: 1;
+  }
+  94%,
+  96% {
+    opacity: 0.25;
+  }
+}
+
+@keyframes scan {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(560%);
+  }
+}
+
+@keyframes glint {
+  0%,
+  60% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(260%);
+  }
+}

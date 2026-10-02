@@ -1,0 +1,59 @@
+<div class="overview">
+  <div class="players">
+    @for (p of players(); track p.color) {
+      <div class="player" [class.player--me]="p.isMe">
+        <app-portrait [piece]="p.info.piece" [tint]="p.info.tint" [size]="46" />
+        <div class="player__who">
+          <strong>{{ p.info.name }}</strong>
+          <span>{{ p.color === 'w' ? 'Blancas' : 'Negras' }}{{ p.isMe ? ' · Tú' : '' }}</span>
+        </div>
+        <span class="player__accuracy" [title]="'Precisión de ' + p.info.name">
+          {{ p.accuracy ?? '–' }}<small>%</small>
+        </span>
+      </div>
+    }
+  </div>
+
+  @if (!complete()) {
+    <div class="analyzing">
+      <span>Analizando la partida…</span>
+      <div class="progress progress--green"><span [style.width.%]="progress() * 100"></span></div>
+    </div>
+  }
+
+  <section>
+    <h3 class="overview__title">Tus jugadas</h3>
+    <div class="counts">
+      @for (c of counts(); track c.classification) {
+        <div class="count" [class.count--zero]="!c.count" [title]="c.info.description">
+          <app-class-badge [classification]="c.classification" size="md" />
+          <span>{{ c.info.plural }}</span>
+          <strong [style.color]="c.count ? c.info.color : null">{{ c.count }}</strong>
+        </div>
+      }
+    </div>
+  </section>
+
+  @if (moments().length) {
+    <section>
+      <h3 class="overview__title">Momentos clave</h3>
+      <div class="moments">
+        @for (m of moments(); track m.ply) {
+          <button type="button" class="moment" (click)="goTo.emit(m.ply)">
+            <app-class-badge [classification]="m.ev.classification" size="sm" />
+            {{ m.label }}
+          </button>
+        }
+      </div>
+    </section>
+  }
+
+  <div class="actions">
+    @if (mistakes() && complete()) {
+      <button type="button" class="btn" (click)="practice.emit()"><app-icon name="target" /> Practicar mis fallos ({{ mistakes() }})</button>
+    }
+    <button type="button" class="btn" [class.btn--ghost]="mistakes() && complete()" (click)="start.emit()">
+      Jugada a jugada <app-icon name="next" />
+    </button>
+  </div>
+</div>

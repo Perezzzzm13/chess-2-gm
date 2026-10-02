@@ -1,0 +1,16 @@
+<svg
+  class="graph"
+  [attr.viewBox]="'0 0 ' + width + ' ' + height"
+  preserveAspectRatio="none"
+  (click)="onClick($event)"
+  role="img"
+  aria-label="Gráfica de evaluación de la partida"
+>
+  <rect class="graph__bg" x="0" y="0" [attr.width]="width" [attr.height]="height" />
+  <polygon class="graph__area" [attr.points]="area()" />
+  <line class="graph__mid" x1="0" [attr.y1]="height / 2" [attr.x2]="width" [attr.y2]="height / 2" />
+  <line class="graph__cursor" [attr.x1]="cursorX()" y1="0" [attr.x2]="cursorX()" [attr.y2]="height" />
+  @for (m of markers(); track $index) {
+    <circle [attr.cx]="m.x" [attr.cy]="m.y" r="0.9" [attr.fill]="m.color" />
+  }
+</svg>

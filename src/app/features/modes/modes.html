@@ -1,0 +1,35 @@
+<div class="page modes">
+  <header class="page-head">
+    <h1>Modos</h1>
+  </header>
+
+  <div class="modes__grid">
+    <!-- El incremental: el modo estrella, con su propio letrero -->
+    <a class="mode mode--queen" routerLink="/reina">
+      <span class="mode__new" aria-hidden="true">¡nuevo!</span>
+      <img class="mode__piece" [src]="'pieces/' + theme() + '/wQ.webp'" alt="" />
+      <h2 class="mode__name">La Reina</h2>
+      <p class="mode__text">
+        Eres la reina y el tablero se llena de piezas. Cázalas encadenando combos, gasta el botín en mejorar ataque, velocidad
+        y aguante, y desata el frenesí para arrasar filas enteras.
+      </p>
+      <span class="btn btn--ghost">Jugar</span>
+    </a>
+
+    @for (v of variants; track v.id) {
+      <article class="mode">
+        <span class="mode__army" aria-hidden="true">
+          @for (i of [1, 2, 3, 4, 5]; track i) {
+            <img [src]="'pieces/' + theme() + '/w' + v.piece.toUpperCase() + '.webp'" alt="" />
+          }
+        </span>
+        <h2 class="mode__name">{{ v.name }}</h2>
+        <p class="mode__text">{{ v.rules }}</p>
+        <div class="mode__actions">
+          <a class="btn" routerLink="/bots" [queryParams]="{ variante: v.id }">Contra un bot</a>
+          <a class="btn btn--danger" routerLink="/amigos" [queryParams]="{ variante: v.id }">Con un amigo</a>
+        </div>
+      </article>
+    }
+  </div>
+</div>

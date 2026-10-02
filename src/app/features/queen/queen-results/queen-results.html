@@ -1,0 +1,50 @@
+<div class="card">
+  <p class="title">{{ result().abandoned ? 'Retirada' : '¡Tiempo!' }}</p>
+
+  <div class="loot">
+    <app-icon name="gem" />
+    <span>+{{ result().gold }}</span>
+    @if (records().gold) {
+      <em class="stamp">Récord</em>
+    }
+  </div>
+  @if (result().bonus > 0) {
+    <p class="bonus">Hucha +{{ result().bonus }}</p>
+  }
+
+  <dl class="stats">
+    @for (s of stats(); track s.label) {
+      <div>
+        <dt>{{ s.label }}</dt>
+        <dd>
+          {{ s.value }}
+          @if (s.record) {
+            <em class="stamp stamp--small">Récord</em>
+          }
+        </dd>
+      </div>
+    }
+    <div>
+      <dt>En el bolsillo</dt>
+      <dd class="banked"><app-icon name="gem" /> {{ banked() }}</dd>
+    </div>
+  </dl>
+
+  @if (pieces().length) {
+    <ul class="haul">
+      @for (p of pieces(); track p.kind) {
+        <li><img [src]="p.sprite" alt="" /> ×{{ p.count }}</li>
+      }
+    </ul>
+  }
+
+  <div class="actions">
+    <button type="button" class="btn btn--big" (click)="again.emit()">¡Otra vez!</button>
+    <button type="button" class="btn btn--ghost" [class.pulse]="canUpgrade()" (click)="shop.emit()">
+      Mejorar
+      @if (canUpgrade()) {
+        <span class="dot"></span>
+      }
+    </button>
+  </div>
+</div>

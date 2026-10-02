@@ -1,0 +1,28 @@
+:host {
+  display: grid;
+  gap: 8px;
+}
+
+.segmented {
+  display: flex;
+
+  button {
+    display: inline-flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  img {
+    width: 26px;
+    height: 26px;
+  }
+}
+
+.note {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}

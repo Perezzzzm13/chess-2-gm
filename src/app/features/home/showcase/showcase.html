@@ -1,0 +1,12 @@
+<figure class="showcase">
+  <div class="showcase__tube">
+    <app-board [fen]="frame().fen" [lastMove]="frame().lastMove" [coordinates]="false" />
+  </div>
+  <figcaption class="showcase__plate">
+    <span class="showcase__name">{{ game().name }}</span>
+    <span class="showcase__who">{{ game().white }} – {{ game().black }} · {{ game().where }}</span>
+    <span class="showcase__move" [class.showcase__move--mate]="finished()">
+      {{ frame().label || 'Comienza…' }}
+    </span>
+  </figcaption>
+</figure>

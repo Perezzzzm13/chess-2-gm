@@ -1,0 +1,125 @@
+<header class="bar">
+  <button type="button" class="btn btn--ghost btn--small" (click)="back.emit()">Volver</button>
+  <h1 class="bar__title">Mapa de mejoras</h1>
+  <span class="bar__count">{{ owned() }}/{{ total }}</span>
+  <span class="bar__gold" title="Oro para gastar"><app-icon name="gem" /> {{ goldText() }}</span>
+  <button type="button" class="btn bar__play" (click)="play.emit()">¡A jugar!</button>
+</header>
+
+<div
+  class="viewport"
+  #viewport
+  (pointerdown)="onPointerDown($event)"
+  (pointermove)="onPointerMove($event)"
+  (pointerup)="onPointerUp($event)"
+  (pointercancel)="onPointerUp($event)"
+  (wheel)="onWheel($event)"
+>
+  <div class="world" [style.width.px]="world.width" [style.height.px]="world.height" [style.transform]="transform()">
+    <svg class="edges" [attr.width]="world.width" [attr.height]="world.height" aria-hidden="true">
+      @for (e of edges(); track e.id) {
+        @if (e.kind === 'lit') {
+          <line class="edge__glow" [attr.x1]="e.x1" [attr.y1]="e.y1" [attr.x2]="e.x2" [attr.y2]="e.y2" [attr.stroke]="e.color" />
+        }
+        <line class="edge__case" [attr.x1]="e.x1" [attr.y1]="e.y1" [attr.x2]="e.x2" [attr.y2]="e.y2" />
+        <line
+          [class]="'edge edge--' + e.kind"
+          [attr.x1]="e.x1"
+          [attr.y1]="e.y1"
+          [attr.x2]="e.x2"
+          [attr.y2]="e.y2"
+          [attr.stroke]="e.kind === 'dark' ? null : e.color"
+        />
+      }
+    </svg>
+
+    @for (l of labels; track l.branch) {
+      <span class="tag" [style.left.px]="l.at.x" [style.top.px]="l.at.y" [style.color]="l.color" [style.--tilt]="l.tilt + 'deg'">
+        {{ l.name }}
+      </span>
+    }
+
+    @for (n of nodes(); track n.node.id) {
+      @let secret = n.state === 'locked' || n.state === 'hidden';
+      <button
+        type="button"
+        [class]="'node node--' + n.state"
+        [class.node--big]="n.big"
+        [class.node--ready]="n.ready"
+        [class.node--selected]="selected() === n.node.id"
+        [style.left.px]="n.x"
+        [style.top.px]="n.y"
+        [style.--c]="n.color"
+        [attr.aria-label]="secret ? 'Mejora oculta' : n.node.name"
+        (click)="select(n.node.id)"
+      >
+        @if (n.state === 'owned' || n.state === 'maxed' || n.ready) {
+          <span class="node__halo"></span>
+        }
+        <span class="node__tile">
+          @if (secret) {
+            <span class="node__mystery">?</span>
+          } @else if (n.sprite) {
+            <img [src]="n.sprite" alt="" />
+          } @else {
+            <app-icon [name]="n.node.icon" />
+          }
+        </span>
+
+        @if (n.state === 'maxed' && n.node.max > 1) {
+          <span class="node__level node__level--max">Máx</span>
+        } @else if (n.level > 0 && n.node.max > 1) {
+          <span class="node__level">{{ n.level }}/{{ n.node.max }}</span>
+        }
+
+        @if (n.state !== 'hidden') {
+          <span class="node__name">{{ n.state === 'locked' ? '???' : n.node.name }}</span>
+        }
+
+        <!-- La pintada solo en las habilidades y cambios de reglas por estrenar; el resto avisa con el parpadeo del borde -->
+        @if (n.ready && n.level === 0 && n.node.major) {
+          <span class="node__ready">¡ya!</span>
+        }
+
+        @if (flash(); as f) {
+          @if (f.id === n.node.id) {
+            @for (k of [f.key]; track k) {
+              <span class="burst">
+                @for (s of sparks; track $index) {
+                  <i [style.--dx.px]="s.dx" [style.--dy.px]="s.dy"></i>
+                }
+              </span>
+            }
+          }
+        }
+      </button>
+    }
+  </div>
+
+  <div class="zoom">
+    <button type="button" (click)="zoomBy(1.25)" aria-label="Acercar">+</button>
+    <button type="button" (click)="zoomBy(0.8)" aria-label="Alejar">−</button>
+  </div>
+
+  <div class="minimap">
+    <app-tree-minimap
+      [levels]="levels()"
+      [gold]="gold()"
+      [view]="viewRect()"
+      [selected]="selected()"
+      [interactive]="true"
+      (jump)="centerOn($event)"
+    />
+  </div>
+
+  @if (selectedNode(); as node) {
+    <app-tree-panel
+      class="panel"
+      [node]="node"
+      [levels]="levels()"
+      [gold]="gold()"
+      (buy)="purchase($event)"
+      (closed)="selected.set(null)"
+    />
+  }
+</div>

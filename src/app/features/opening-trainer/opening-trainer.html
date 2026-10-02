@@ -1,0 +1,88 @@
+<div class="page trainer">
+  @if (opening(); as o) {
+    <section class="arena">
+      <app-board
+        [fen]="fen()"
+        [orientation]="o.side"
+        [movable]="movable()"
+        [lastMove]="lastMove()"
+        [arrows]="arrows()"
+        (move)="onMove($event)"
+      />
+    </section>
+
+    <aside class="side panel">
+      <h2 class="panel__title trainer__name">{{ o.name }}</h2>
+      <div class="side__top">
+        <a routerLink="/aperturas" class="btn btn--ghost btn--small btn--icon" title="Volver a aperturas"><app-icon name="exit" /></a>
+        <div class="segmented">
+          <button type="button" [class.active]="mode() === 'learn'" (click)="backToLearn()"><app-icon name="book" /> Aprender</button>
+          <button type="button" [class.active]="mode() !== 'learn'" (click)="startPractice()"><app-icon name="swords" /> Practicar</button>
+        </div>
+      </div>
+
+      <div class="progress progress--green"><span [style.width.%]="(position() / total()) * 100"></span></div>
+
+      @switch (mode()) {
+        @case ('learn') {
+          <div class="lesson">
+            @if (currentComment(); as comment) {
+              <p class="lesson__move">{{ o.steps[position() - 1].san }}</p>
+              <p>{{ comment }}</p>
+            } @else {
+              <p class="lesson__move">Con {{ o.side === 'w' ? 'blancas' : 'negras' }}</p>
+              <p>{{ o.summary }} La flecha te enseña la siguiente jugada; avanza con los botones o con el teclado.</p>
+            }
+          </div>
+          <div class="nav">
+            <button type="button" class="btn btn--ghost btn--icon" (click)="goTo(0)" title="Inicio"><app-icon name="first" /></button>
+            <button type="button" class="btn btn--icon" (click)="goTo(position() - 1)" title="Anterior"><app-icon name="prev" /></button>
+            <span class="nav__count">{{ position() }}<small>/{{ total() }}</small></span>
+            <button type="button" class="btn btn--icon" (click)="goTo(position() + 1)" title="Siguiente"><app-icon name="next" /></button>
+            <button type="button" class="btn btn--ghost btn--icon" (click)="goTo(total())" title="Final"><app-icon name="last" /></button>
+          </div>
+          @if (position() === total()) {
+            <button type="button" class="btn btn--big" (click)="startPractice()">¡Me la sé!</button>
+          }
+        }
+        @case ('practice') {
+          <div class="lesson" [class.lesson--bad]="feedback()?.tone === 'bad'" [class.lesson--good]="feedback()?.tone === 'good'">
+            <p class="lesson__move">{{ isMyTurn() ? 'Tu turno' : 'Juega el rival…' }}</p>
+            <p>{{ feedback()?.text ?? 'Juega la siguiente jugada de la línea, sin flechas.' }}</p>
+          </div>
+          <div class="mistakes">
+            <span>Fallos</span>
+            <span class="mistakes__marks">
+              @for (i of [1, 2, 3]; track i) {
+                <i [class.on]="i <= mistakes()"></i>
+              }
+            </span>
+          </div>
+        }
+        @case ('done') {
+          <div class="done">
+            <span class="done__stars">
+              @for (i of [1, 2, 3]; track i) {
+                <app-icon name="star" [class.off]="i > stars()" />
+              }
+            </span>
+            <h3>{{ stars() === 3 ? '¡Perfecta!' : stars() === 2 ? '¡Muy bien!' : '¡Completada!' }}</h3>
+            <p>
+              {{ mistakes() === 0 ? 'Ni un fallo. Esta ya es tuya.' : mistakes() + (mistakes() === 1 ? ' fallo' : ' fallos') + '. Repítela para las tres estrellas.' }}
+            </p>
+            <div class="done__actions">
+              <button type="button" class="btn" (click)="startPractice()">Repetir</button>
+              <a class="btn btn--ghost" routerLink="/aperturas">Otra apertura</a>
+            </div>
+          </div>
+        }
+      }
+    </aside>
+  } @else {
+    <section class="panel empty">
+      <h2 class="panel__title">Apertura no encontrada</h2>
+      <p>No encontramos esa apertura.</p>
+      <a class="btn" routerLink="/aperturas">Volver a aperturas</a>
+    </section>
+  }
+</div>

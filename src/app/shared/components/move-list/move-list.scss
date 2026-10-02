@@ -1,0 +1,73 @@
+@use 'mixins' as *;
+
+:host {
+  display: block;
+  min-height: 0;
+  border: $px solid $outline;
+  background: rgba(6, 2, 3, 0.6);
+  box-shadow: inset 0 $px 0 rgba(0, 0, 0, 0.6);
+  @include pixel-corners;
+}
+
+.moves {
+  max-height: 100%;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #8a6420 transparent;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 38px 1fr 1fr;
+  align-items: center;
+  padding: 1px 0;
+
+  &:nth-child(odd) {
+    background: rgba(255, 220, 160, 0.04);
+  }
+}
+
+.number {
+  padding-left: 8px;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--text-faint);
+}
+
+.move {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 30px;
+  padding: 2px 8px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  font-family: var(--font-body);
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--text);
+  cursor: pointer;
+  @include neon-hover;
+}
+
+.move--active {
+  background: #ffc845;
+  box-shadow:
+    inset 0 -2px 0 #b8740f,
+    inset 0 0 0 2px $outline;
+  color: #2a1204;
+  @include pixel-corners(2px);
+}
+
+.move--empty {
+  color: var(--text-faint);
+  cursor: default;
+}
+
+.empty {
+  margin: 0;
+  padding: 12px;
+  color: var(--text-faint);
+  font-style: italic;
+}

@@ -1,0 +1,110 @@
+<div class="page summary">
+  @if (game(); as g) {
+    <section class="panel verdict" [class.panel--velvet]="outcome()?.tone === 'win'">
+      <div class="ribbon verdict__ribbon">{{ outcome()?.title }}</div>
+      <p class="verdict__reason">{{ g.termination }} · {{ fullMoves() }} movimientos{{ g.opening ? ' · ' + g.opening : '' }}</p>
+
+      <div class="verdict__players">
+        @for (p of players(); track p.color; let first = $first) {
+          @if (!first) {
+            <span class="verdict__vs">VS</span>
+          }
+          <div class="fighter" [class.fighter--me]="p.isMe">
+            <app-portrait [piece]="p.info.piece" [tint]="p.info.tint" [size]="84" />
+            <strong class="fighter__name">{{ p.info.name }}</strong>
+            <span class="fighter__side">{{ p.color === 'w' ? 'Blancas' : 'Negras' }}{{ p.isMe ? ' · Tú' : '' }}</span>
+            <div class="gauge">
+              <svg viewBox="0 0 120 120">
+                <circle cx="60" cy="60" [attr.r]="ringRadius" class="gauge__bg" />
+                <circle
+                  cx="60"
+                  cy="60"
+                  [attr.r]="ringRadius"
+                  class="gauge__value"
+                  [attr.stroke-dasharray]="p.dash + ' ' + ringCircumference"
+                />
+              </svg>
+              <span class="gauge__number">{{ complete() ? p.accuracy.toFixed(0) : '–' }}<small>%</small></span>
+            </div>
+            <span class="fighter__caption">Precisión</span>
+          </div>
+        }
+      </div>
+
+      @if (!complete()) {
+        <div class="analyzing">
+          <span>Analizando la partida…</span>
+          <div class="progress progress--green"><span [style.width.%]="progress() * 100"></span></div>
+        </div>
+      }
+
+      <div class="verdict__loot">
+        @if (g.ratingDelta !== undefined) {
+          <div class="loot">
+            <app-icon name="trophy" />
+            <span [class.down]="g.ratingDelta < 0">{{ g.ratingDelta > 0 ? '+' : '' }}{{ g.ratingDelta }}</span>
+          </div>
+        }
+        @if (g.xpGained) {
+          <div class="loot loot--xp">
+            <app-icon name="gem" />
+            <span>+{{ g.xpGained }} XP</span>
+          </div>
+        }
+      </div>
+
+      <div class="verdict__actions">
+        <a class="btn btn--big" [routerLink]="['/partidas', g.id, 'revision']"><app-icon name="search" /> Revisar</a>
+        <a class="btn btn--ghost" [routerLink]="g.mode === 'friend' ? '/amigos' : '/bots'"><app-icon name="swords" /> Otra partida</a>
+      </div>
+    </section>
+
+      <section class="panel table">
+        <h2 class="panel__title">Jugadas</h2>
+        <div class="table__head">
+          <span></span>
+          <span>{{ g.white.name }}</span>
+          <span>{{ g.black.name }}</span>
+        </div>
+        @for (row of rows(); track row.classification) {
+          <div class="table__row" [class.table__row--empty]="!row.white && !row.black">
+            <span class="table__label">
+              <app-class-badge [classification]="row.classification" size="md" />
+              {{ row.info.plural }}
+            </span>
+            <span class="table__count" [style.color]="row.white ? row.info.color : null">{{ row.white }}</span>
+            <span class="table__count" [style.color]="row.black ? row.info.color : null">{{ row.black }}</span>
+          </div>
+        }
+      </section>
+
+      <div class="column">
+        <section class="panel">
+          <h2 class="panel__title">Evolución</h2>
+          <app-eval-graph [evaluations]="evaluations()" (select)="openReview($event)" />
+          <p class="hint">Toca la gráfica para ir a ese momento.</p>
+        </section>
+
+        @if (keyMoments().length) {
+          <section class="panel moments">
+            <h2 class="panel__title">Momentos clave</h2>
+            @for (ev of keyMoments(); track ev.ply) {
+              <button type="button" class="moment" (click)="openReview(ev.ply)">
+                <app-class-badge [classification]="ev.classification" size="md" />
+                <strong>{{ moveLabel(ev) }}</strong>
+                <span>{{ commentFor(ev) }}</span>
+                <app-icon class="moment__go" name="next" />
+              </button>
+            }
+          </section>
+        }
+      </div>
+  } @else {
+    <section class="panel empty">
+      <h2 class="panel__title">Partida no encontrada</h2>
+      <app-icon class="empty__icon" name="scroll" />
+      <p>Esta partida ya no está en el historial.</p>
+      <a class="btn" routerLink="/bots">Jugar una partida</a>
+    </section>
+  }
+</div>

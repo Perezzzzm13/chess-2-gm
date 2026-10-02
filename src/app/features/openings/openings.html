@@ -1,0 +1,44 @@
+<div class="page library">
+  <header class="page-head">
+    <h1>Aperturas</h1>
+  </header>
+
+  <div class="toolbar">
+    <div class="segmented">
+      <button type="button" [class.active]="filter() === 'all'" (click)="filter.set('all')">Todas</button>
+      <button type="button" [class.active]="filter() === 'w'" (click)="filter.set('w')">Con blancas</button>
+      <button type="button" [class.active]="filter() === 'b'" (click)="filter.set('b')">Con negras</button>
+    </div>
+    <span class="mastered"><app-icon name="star" /> {{ mastered() }} de {{ total }} dominadas</span>
+  </div>
+
+  <!-- Cada apertura es un cartel pegado con cinta en la pared -->
+  <div class="wall">
+    @for (o of openings(); track o.id) {
+      <a class="opening" [class.opening--done]="o.stars === 3" [routerLink]="['/aperturas', o.id]" [title]="o.summary">
+        @if (o.stars === 3) {
+          <span class="opening__stamp" aria-hidden="true">Dominada</span>
+        }
+        <div class="opening__top">
+          <img class="opening__side" [src]="'pieces/pixel/' + o.side + 'K.webp'" [alt]="o.side === 'w' ? 'Blancas' : 'Negras'" />
+          <span class="stars">
+            @for (i of [1, 2, 3]; track i) {
+              <app-icon name="star" [class.off]="i > o.stars" />
+            }
+          </span>
+        </div>
+        <h3>{{ o.name }}</h3>
+        <p class="opening__moves">{{ o.preview }}…</p>
+        <div class="opening__footer">
+          <span class="level">
+            @for (i of [1, 2, 3]; track i) {
+              <i [class.on]="i <= o.difficulty"></i>
+            }
+            {{ difficulty(o.difficulty) }}
+          </span>
+          <span class="opening__go">{{ o.stars ? 'Repetir' : 'Empezar' }}</span>
+        </div>
+      </a>
+    }
+  </div>
+</div>

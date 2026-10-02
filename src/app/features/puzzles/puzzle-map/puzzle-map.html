@@ -1,0 +1,128 @@
+<div class="page atlas">
+  <header class="page-head atlas__head">
+    <h1>Problemas</h1>
+  </header>
+
+  <aside class="atlas__side">
+    <section class="panel next">
+      @if (next(); as n) {
+        <h2 class="panel__title">
+          Problema {{ n.stop.index + 1 }}
+          <span class="panel__aside">{{ n.chapter.name }}</span>
+        </h2>
+        <a class="next__board" [routerLink]="['/problemas', n.stop.puzzle.id]" title="Resolver">
+          <app-board
+            [fen]="n.position.fen"
+            [orientation]="n.position.orientation"
+            [lastMove]="n.position.lastMove"
+            [coordinates]="false"
+          />
+        </a>
+        <p class="next__task">
+          Juegan {{ n.position.orientation === 'w' ? 'blancas' : 'negras' }}
+          @if (n.themes.length) {
+            · {{ n.themes.join(', ') }}
+          }
+        </p>
+        <a class="btn btn--big" [routerLink]="['/problemas', n.stop.puzzle.id]">¡A resolver!</a>
+      } @else {
+        <h2 class="panel__title">Castillo conquistado</h2>
+        <p class="next__task">Has resuelto todos los problemas. Repite los que quieras desde el mapa.</p>
+      }
+
+      <div class="tally">
+        <div class="tally__bar progress"><span [style.width.%]="(path.solvedCount() / path.stops.length) * 100"></span></div>
+        <p>
+          <strong>{{ path.solvedCount() }}</strong> de {{ path.stops.length }} resueltos
+          <span class="tally__stats">
+            <span title="Tu nivel en problemas"><app-icon name="trophy" /> {{ profile.profile().puzzleRating }}</span>
+            <span title="Racha a la primera" [class.hot]="profile.profile().puzzleStreak >= 3"><app-icon name="fire" /> {{ profile.profile().puzzleStreak }}</span>
+          </span>
+        </p>
+      </div>
+    </section>
+  </aside>
+
+  <div class="chapters">
+    @for (chapter of path.chapters; track chapter.index) {
+      @let status = path.chapterStatus(chapter);
+      @let open = openChapter() === chapter.index;
+      <section class="chapter" [class]="'chapter chapter--' + status" [class.chapter--open]="open">
+        <button type="button" class="chapter__head" (click)="toggle(chapter)" [disabled]="status === 'locked'" [attr.aria-expanded]="open">
+          <span class="chapter__icon"><app-icon [name]="chapter.icon" /></span>
+          <span class="chapter__text">
+            <strong>{{ chapter.name }}</strong>
+            <small>
+              @if (status === 'locked') {
+                Se abre al superar {{ path.chapters[chapter.index - 1].name }}
+              } @else {
+                Dificultad {{ chapter.minRating }}–{{ chapter.maxRating }}
+              }
+            </small>
+          </span>
+          <span class="chapter__count">
+            @switch (status) {
+              @case ('done') {
+                <app-icon class="chapter__done" name="check" />
+              }
+              @case ('locked') {
+                <app-icon class="chapter__lock" name="lock" />
+              }
+              @default {
+                {{ path.chapterSolved(chapter) }}/{{ chapter.stops.length }}
+              }
+            }
+          </span>
+        </button>
+
+        @if (open) {
+          @let geometry = trails[chapter.index];
+          <div class="trail" [style.aspect-ratio]="trailWidth + ' / ' + geometry.trail.height">
+            <svg class="trail__road" [attr.viewBox]="'0 0 ' + trailWidth + ' ' + geometry.trail.height" aria-hidden="true">
+              <path class="road road--edge" [attr.d]="geometry.road" />
+              <path class="road road--bed" [attr.d]="geometry.road" />
+              <path class="road road--walked" [attr.d]="walked(chapter)" />
+            </svg>
+
+            @for (stop of chapter.stops; track stop.index; let last = $last) {
+              @let point = geometry.trail.points[$index];
+              @let state = path.status(stop);
+              @let title = 'Problema ' + (stop.index + 1) + (state === 'done' ? ' · repetir sin puntos' : state === 'locked' ? ' · bloqueado' : '');
+              <div
+                class="stop"
+                [class]="'stop stop--' + state"
+                [class.stop--boss]="last"
+                [style.left.%]="(point.x / trailWidth) * 100"
+                [style.top.%]="(point.y / geometry.trail.height) * 100"
+              >
+                @if (state === 'locked') {
+                  <span class="stop__coin" [title]="title">
+                    @if (last) {
+                      <app-icon [name]="chapter.icon" />
+                    } @else {
+                      {{ stop.index + 1 }}
+                    }
+                  </span>
+                } @else {
+                  <a class="stop__coin" [routerLink]="['/problemas', stop.puzzle.id]" [title]="title">
+                    @if (last) {
+                      <app-icon [name]="chapter.icon" />
+                    } @else {
+                      {{ stop.index + 1 }}
+                    }
+                  </a>
+                }
+                @if (state === 'done') {
+                  <span class="stop__check"><app-icon name="check" /></span>
+                }
+                @if (state === 'current') {
+                  <img class="stop__token" [src]="token()" alt="Estás aquí" />
+                }
+              </div>
+            }
+          </div>
+        }
+      </section>
+    }
+  </div>
+</div>

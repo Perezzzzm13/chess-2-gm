@@ -1,0 +1,104 @@
+<div class="board__frame">
+  <div
+    #grid
+    class="board__squares"
+    [class.board__squares--interactive]="movable() !== 'none'"
+    (pointerdown)="onPointerDown($event)"
+    (pointermove)="onPointerMove($event)"
+    (pointerup)="onPointerUp($event)"
+    (pointercancel)="drag.set(null)"
+  >
+    @for (sq of squares(); track sq.name + ':' + sq.piece + ':' + (sq.animate ? fen() : '')) {
+      <div
+        class="square"
+        [class.square--light]="sq.light"
+        [class.square--dark]="!sq.light"
+        [class.square--last]="sq.lastMove"
+        [class.square--selected]="selected() === sq.name"
+        [class.square--check]="sq.check"
+      >
+        @if (coordinates() && sq.rankLabel) {
+          <span class="coord coord--rank">{{ sq.rankLabel }}</span>
+        }
+        @if (coordinates() && sq.fileLabel) {
+          <span class="coord coord--file">{{ sq.fileLabel }}</span>
+        }
+        @if (sq.piece) {
+          <img
+            class="piece"
+            [class.piece--animated]="sq.animate"
+            [class.piece--dragging]="drag()?.active && drag()?.from === sq.name"
+            [style.--dx]="sq.animate ? sq.animate.dx * 100 + '%' : null"
+            [style.--dy]="sq.animate ? sq.animate.dy * 100 + '%' : null"
+            [src]="pieceUrl(sq.piece)"
+            [alt]="sq.piece"
+            draggable="false"
+          />
+        }
+        @if (sq.target) {
+          <span class="target" [class.target--capture]="sq.capture"></span>
+        }
+      </div>
+    }
+
+    <div class="board__fx"></div>
+
+    @if (hintView(); as hint) {
+      <div class="hint" [style.left.%]="hint.col * 12.5" [style.top.%]="hint.row * 12.5"></div>
+    }
+
+    @if (arrowViews().length) {
+      <svg class="arrows" viewBox="0 0 100 100" aria-hidden="true">
+        @for (a of arrowViews(); track $index) {
+          <defs>
+            <marker [attr.id]="'head-' + $index" markerWidth="4" markerHeight="4" refX="2" refY="2" orient="auto">
+              <path d="M0,0 L4,2 L0,4 Z" [attr.fill]="a.color" />
+            </marker>
+          </defs>
+          <line
+            [attr.x1]="a.x1"
+            [attr.y1]="a.y1"
+            [attr.x2]="a.x2"
+            [attr.y2]="a.y2"
+            [attr.stroke]="a.color"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            [attr.marker-end]="'url(#head-' + $index + ')'"
+          />
+        }
+      </svg>
+    }
+
+    @if (badgeView(); as b) {
+      <div class="badge" [style.left.%]="b.left" [style.top.%]="b.top" [style.background-color]="b.color" [title]="b.label">
+        @if (b.icon; as icon) {
+          <app-icon [name]="icon" />
+        } @else {
+          {{ b.symbol }}
+        }
+      </div>
+    }
+
+    @if (drag(); as d) {
+      @if (d.active) {
+        <img class="ghost" [src]="pieceUrl(d.piece)" [style]="ghostStyle(d)" alt="" draggable="false" />
+      }
+    }
+
+    @if (promotion()) {
+      <div class="promotion" (pointerdown)="$event.stopPropagation(); cancelPromotion()">
+        @for (p of promotionPieces(); track p.type) {
+          <button
+            type="button"
+            class="promotion__piece"
+            [style.left.%]="p.col * 12.5"
+            [style.top.%]="p.row * 12.5"
+            (pointerdown)="$event.stopPropagation(); choosePromotion(p.type)"
+          >
+            <img [src]="pieceUrl(p.piece)" [alt]="p.type" draggable="false" />
+          </button>
+        }
+      </div>
+    }
+  </div>
+</div>

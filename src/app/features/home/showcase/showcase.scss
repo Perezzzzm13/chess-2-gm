@@ -1,0 +1,76 @@
+@use 'mixins' as *;
+
+:host {
+  display: block;
+}
+
+.showcase {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+}
+
+/* El tablero, enmarcado por un tubo de neón dorado */
+.showcase__tube {
+  padding: 10px;
+  @include neon-box;
+  background: rgba(10, 4, 6, 0.7);
+
+  app-board {
+    display: block;
+  }
+}
+
+/* Placa bajo el escaparate: qué partida es y la última jugada */
+.showcase__plate {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0 16px;
+  padding: 8px 14px 10px;
+  border: $px solid $outline;
+  background: #1d0c11;
+  box-shadow: inset 0 0 0 $px #3a2a14;
+  @include pixel-corners;
+}
+
+.showcase__name {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  line-height: 1;
+  color: var(--neon-gold);
+}
+
+.showcase__who {
+  grid-row: 2;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-faint);
+}
+
+.showcase__move {
+  grid-row: 1 / 3;
+  grid-column: 2;
+  min-width: 4ch;
+  font-family: var(--font-display);
+  font-size: 2.3rem;
+  line-height: 1;
+  text-align: right;
+  color: var(--neon-ivory);
+}
+
+.showcase__move--mate {
+  @include neon-text(var(--neon-red-glow), #ffe0e6);
+}
+
+@media (max-width: 520px) {
+  .showcase__plate {
+    grid-template-columns: 1fr;
+  }
+
+  .showcase__move {
+    grid-row: auto;
+    grid-column: auto;
+    text-align: left;
+  }
+}

@@ -1,0 +1,82 @@
+@if (view() === 'hub') {
+  <div class="page hub">
+    <section class="hero">
+      <div class="sign">
+        <svg class="tag" viewBox="0 0 220 120" aria-hidden="true">
+          <!-- Corona pintada con spray, con sus goterones -->
+          <path class="tag__stroke" d="M22 92 L34 28 L72 70 L110 14 L148 70 L186 28 L198 92 Z" />
+          <path class="tag__stroke" d="M30 104 C80 98 140 98 192 104" />
+          <path class="tag__drip" d="M58 100 v14 M120 100 v18 M168 102 v10" />
+          <circle class="tag__drop" cx="58" cy="116" r="3" />
+          <circle class="tag__drop" cx="120" cy="120" r="3.5" />
+        </svg>
+        <img class="sign__queen" [src]="queenSprite" alt="" />
+        <h1 class="sign__title">La Reina</h1>
+        <p class="sign__sub">Caza todo lo que se mueva</p>
+      </div>
+
+      <div class="purse">
+        <span class="purse__label">Oro</span>
+        <strong><app-icon name="gem" /> {{ save().gold }}</strong>
+      </div>
+
+      @if (veteran()) {
+        <p class="record">
+          Récord <span><app-icon name="gem" /> {{ save().best.gold }}</span> · combo <span>x{{ save().best.combo }}</span>
+        </p>
+      }
+
+      <button type="button" class="btn btn--big play" (click)="play()">¡A jugar!</button>
+
+      <ul class="howto">
+        <li><b>Mueve</b> con un clic en la casilla, deslizando el dedo o con <kbd>WASD</kbd> <kbd>Q</kbd><kbd>E</kbd><kbd>Z</kbd><kbd>C</kbd></li>
+        <li><b>Encadena</b> capturas rápidas: cada eslabón del combo suma oro</li>
+        <li><b>Frenesí</b> con la barra llena (<kbd>Espacio</kbd>): arrasa la línea entera</li>
+        <li>Los <b>muros</b> cortan el paso; lo que no muere de un golpe <b>te rebota</b></li>
+        <li><b>Habilidades</b> del mapa con <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd>: salto de caballo, rayo del alfil y enroque</li>
+        <li>Pasa por encima de <b>relojes, rayos, estrellas y cofres</b> para cogerlos</li>
+      </ul>
+    </section>
+
+    <section class="atlas">
+      <h2 class="atlas__title">Mapa de mejoras</h2>
+      @if (canUpgrade()) {
+        <span class="atlas__tag">¡{{ affordable() }} al alcance!</span>
+      }
+      <button type="button" class="atlas__mini" (click)="toMap()" aria-label="Abrir el mapa de mejoras">
+        <app-tree-minimap [levels]="save().levels" [gold]="save().gold" [selected]="focus()" />
+      </button>
+      <div class="atlas__foot">
+        <p class="atlas__count">
+          <strong>{{ owned() }}</strong>/{{ totalNodes }} mejoras
+        </p>
+        <button type="button" class="btn btn--big" (click)="toMap()">Abrir el mapa</button>
+      </div>
+    </section>
+  </div>
+} @else if (view() === 'map') {
+  <app-queen-tree
+    [levels]="save().levels"
+    [gold]="save().gold"
+    [(selected)]="focus"
+    (buy)="buy($event)"
+    (play)="play()"
+    (back)="toHub()"
+  />
+} @else {
+  <div class="page run">
+    @for (id of [runId()]; track id) {
+      <app-queen-arena [stats]="stats()" (finished)="onFinished($event)" />
+    }
+    @if (result(); as run) {
+      <app-queen-results
+        [result]="run"
+        [records]="records()"
+        [banked]="save().gold"
+        [canUpgrade]="canUpgrade()"
+        (again)="play()"
+        (shop)="toMap()"
+      />
+    }
+  </div>
+}

@@ -1,0 +1,82 @@
+<article class="retry" [class]="'retry retry--' + state().status">
+  <header class="retry__head">
+    <app-icon name="target" />
+    <div>
+      @if (practice(); as p) {
+        <span class="retry__step">Fallo {{ p.index + 1 }} de {{ p.plies.length }}</span>
+      }
+      <strong>Busca algo mejor que {{ evaluation().san }}</strong>
+    </div>
+  </header>
+
+  @switch (state().status) {
+    @case ('idle') {
+      <p class="retry__text">
+        @if (state().hint) {
+          Pista: mueve la pieza marcada en verde.
+        } @else {
+          Mueve en el tablero la jugada que creas mejor.
+        }
+      </p>
+    }
+    @case ('checking') {
+      <p class="retry__text retry__text--wait">Comprobando…</p>
+    }
+    @case ('right') {
+      <div class="verdict">
+        <app-class-badge [classification]="state().attempt!.classification" size="md" />
+        <strong>¡Eso es! {{ state().attempt!.san }}</strong>
+      </div>
+      <p class="retry__text">{{ state().comment }}</p>
+    }
+    @case ('wrong') {
+      <div class="verdict">
+        <app-class-badge [classification]="state().attempt!.classification" size="md" />
+        <strong>
+          @if (state().same) {
+            Es la misma que en la partida
+          } @else {
+            {{ state().attempt!.san }}: {{ attemptInfo()?.label?.toLowerCase() }}
+          }
+        </strong>
+      </div>
+      @if (!state().same) {
+        <p class="retry__text">{{ state().comment }}</p>
+      }
+    }
+  }
+
+  <div class="retry__actions">
+    @switch (state().status) {
+      @case ('right') {
+        @if (practice()) {
+          <button type="button" class="btn" (click)="next.emit()">
+            {{ isLastOfPractice() ? 'Terminar' : 'Siguiente fallo' }} <app-icon name="next" />
+          </button>
+        } @else {
+          <button type="button" class="btn" (click)="reveal.emit()">Ver la del motor</button>
+        }
+      }
+      @case ('wrong') {
+        <button type="button" class="btn" (click)="again.emit()"><app-icon name="retry" /> Otra vez</button>
+        @if (!state().hint) {
+          <button type="button" class="btn btn--ghost" (click)="hint.emit()"><app-icon name="bulb" /> Pista</button>
+        }
+      }
+      @case ('idle') {
+        @if (!state().hint) {
+          <button type="button" class="btn btn--ghost" (click)="hint.emit()"><app-icon name="bulb" /> Pista</button>
+        }
+      }
+    }
+    @if (state().status !== 'right') {
+      @if (practice()) {
+        <button type="button" class="btn btn--danger btn--small" (click)="next.emit()">Saltar</button>
+      } @else {
+        <button type="button" class="btn btn--danger btn--small" (click)="reveal.emit()">Ver solución</button>
+      }
+    }
+  </div>
+
+  <button type="button" class="retry__exit" (click)="exit.emit()">{{ practice() ? 'Dejar la práctica' : 'Volver a la partida' }}</button>
+</article>

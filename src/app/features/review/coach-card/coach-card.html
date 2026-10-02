@@ -1,0 +1,68 @@
+<article class="coach" [style.--accent]="info().color">
+  <header class="coach__head">
+    <app-class-badge [classification]="evaluation().classification" size="lg" />
+    <div class="coach__title">
+      <strong class="coach__label">{{ info().label }}</strong>
+      <span class="coach__move">
+        {{ moveNumber() }} <b>{{ evaluation().san }}</b>
+        <span class="coach__who" [class.coach__who--me]="isMine()">{{ isMine() ? 'Tú' : moverName() }}</span>
+      </span>
+    </div>
+  </header>
+
+  <div class="odds" [title]="'Probabilidad de ganar de ' + (isMine() ? 'ti' : moverName())">
+    <span class="odds__label">{{ isMine() ? 'Tus opciones' : 'Sus opciones' }}</span>
+    <div class="odds__bar">
+      <span class="odds__fill" [style.width.%]="odds().after"></span>
+      @if (odds().delta < -1) {
+        <span class="odds__lost" [style.left.%]="odds().after" [style.width.%]="-odds().delta"></span>
+      }
+    </div>
+    <span class="odds__numbers">
+      @if (odds().delta < -1) {
+        {{ odds().before }}% → <b>{{ odds().after }}%</b>
+      } @else {
+        <b>{{ odds().after }}%</b>
+      }
+    </span>
+  </div>
+
+  <p class="coach__text">{{ comment() }}</p>
+
+  @if (hasAlternative()) {
+    <div class="compare">
+      <button type="button" class="compare__item" [class.compare__item--on]="mode() === 'best'" (click)="toggleBest.emit()">
+        <i class="dot dot--played"></i>
+        <span>{{ isMine() ? 'Jugaste' : 'Jugó' }}</span>
+        <strong>{{ evaluation().san }}</strong>
+      </button>
+      <button type="button" class="compare__item" [class.compare__item--on]="mode() === 'best'" (click)="toggleBest.emit()">
+        <i class="dot dot--best"></i>
+        <span>Mejor</span>
+        <strong>{{ evaluation().bestSan }}</strong>
+      </button>
+    </div>
+
+    @if (bestLine().length > 1) {
+      <div class="line">
+        <span class="line__label">Línea del motor</span>
+        <div class="line__moves">
+          @for (san of bestLine(); track $index) {
+            <button
+              type="button"
+              class="line__move"
+              [class.line__move--on]="mode() === 'line' && lineStep() === $index"
+              (click)="showLine.emit($index)"
+            >
+              {{ san }}
+            </button>
+          }
+        </div>
+      </div>
+    }
+  }
+
+  @if (retryable() && isMine()) {
+    <button type="button" class="btn coach__retry" (click)="retry.emit()"><app-icon name="retry" /> Reintentar esta jugada</button>
+  }
+</article>

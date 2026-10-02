@@ -1,0 +1,111 @@
+@use 'mixins' as *;
+
+.modes__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr));
+  gap: 28px;
+  align-items: stretch;
+}
+
+.mode {
+  position: relative;
+  display: grid;
+  align-content: start;
+  justify-items: start;
+  gap: 10px;
+  padding: 24px;
+  color: inherit;
+  background: linear-gradient(180deg, #1d0c11, #140709);
+  @include frame;
+}
+
+/* Pintada de "¡nuevo!" sobre el letrero */
+.mode__new {
+  position: absolute;
+  top: -16px;
+  left: 18px;
+  font-family: var(--font-spray);
+  font-size: 1.7rem;
+  line-height: 1;
+  color: #f5e03a;
+  transform: rotate(-7deg);
+}
+
+.mode__name {
+  margin: 4px 0 0;
+  font-size: 3rem;
+  color: var(--neon-gold);
+}
+
+.mode__text {
+  max-width: 46ch;
+  margin: 0 0 6px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.mode__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: auto;
+}
+
+/* Una fila de caballos donde iban los peones */
+.mode__army {
+  display: flex;
+  gap: 2px;
+
+  img {
+    width: 46px;
+    height: 46px;
+  }
+}
+
+/* La Reina: letrero de neón carmesí */
+.mode--queen {
+  clip-path: none;
+  background:
+    radial-gradient(ellipse at 85% 15%, rgba(255, 59, 92, 0.24), transparent 60%),
+    rgba(14, 4, 7, 0.88);
+  @include neon-box(var(--neon-red), var(--neon-red-glow));
+
+  .mode__name {
+    font-size: 3.6rem;
+    @include neon-text(var(--neon-red-glow), #ffe0e6);
+  }
+
+  .btn {
+    margin-top: auto;
+  }
+
+  @include selector;
+}
+
+.mode__piece {
+  grid-area: piece;
+  align-self: end;
+  width: clamp(72px, 24vw, 120px);
+}
+
+/* La reina va en su propia columna: nunca tapa el texto */
+.mode--queen {
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    'name piece'
+    'text piece'
+    'action piece';
+  column-gap: 12px;
+
+  .mode__name {
+    grid-area: name;
+  }
+
+  .mode__text {
+    grid-area: text;
+  }
+
+  .btn {
+    grid-area: action;
+  }
+}

@@ -1,0 +1,42 @@
+@use 'mixins' as *;
+
+:host {
+  display: block;
+}
+
+.graph {
+  display: block;
+  width: 100%;
+  height: 110px;
+  border: $px solid $outline;
+  box-shadow: inset 0 0 0 $px #3a2a14;
+  cursor: pointer;
+  @include pixel-corners;
+}
+
+.graph__bg {
+  fill: #12070a;
+}
+
+.graph__area {
+  fill: #efdcae;
+}
+
+.graph__mid {
+  stroke: var(--neon-red);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+  vector-effect: non-scaling-stroke;
+}
+
+.graph__cursor {
+  stroke: var(--neon-gold);
+  stroke-width: 3;
+  vector-effect: non-scaling-stroke;
+}
+
+circle {
+  stroke: $outline;
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}

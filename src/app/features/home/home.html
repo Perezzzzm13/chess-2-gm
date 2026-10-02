@@ -1,0 +1,73 @@
+<div class="page lobby">
+  <!-- Izquierda: a quién te enfrentas y cómo te fue la última vez -->
+  <div class="lobby__side">
+    <section class="panel panel--velvet duel">
+      <span class="spray duel__tag" aria-hidden="true">¿te atreves?</span>
+      <app-portrait class="duel__portrait" [piece]="suggestedBot().piece" [tint]="suggestedBot().tint" [size]="120" />
+      <h2 class="duel__name">{{ suggestedBot().name }}</h2>
+      <span class="chip"><app-icon name="trophy" /> {{ suggestedBot().elo }} · {{ suggestedBot().title }}</span>
+      <p class="parchment duel__quote">{{ suggestedBot().greeting }}</p>
+      @if (ongoing(); as o) {
+        <a class="btn btn--big" routerLink="/partida" [queryParams]="o">Continuar</a>
+      } @else {
+        <a class="btn btn--big" routerLink="/partida" [queryParams]="{ bot: suggestedBot().id, color: 'random' }">¡A jugar!</a>
+      }
+      <a class="duel__other" routerLink="/bots">Elegir otro rival</a>
+    </section>
+
+    @if (lastGame(); as g) {
+      <a class="panel last" [routerLink]="['/partidas', g.game.id, 'revision']" title="Revisar la partida">
+        <span class="last__row">
+          <span [class]="'stamp stamp--' + g.tone">{{ g.label }}</span>
+          <span class="last__who">
+            <strong>vs {{ g.opponent.name }}</strong>
+            <span>{{ g.accuracy !== null ? g.accuracy + '% de precisión' : g.moves + ' jugadas' }}</span>
+          </span>
+          <app-icon class="last__go" name="search" />
+        </span>
+        @if (g.highlights.length) {
+          <span class="last__badges">
+            @for (c of g.highlights; track c.classification) {
+              <span class="last__badge" [title]="c.count + ' ' + c.label">
+                <app-class-badge [classification]="c.classification" size="sm" />
+                {{ c.count }}
+              </span>
+            }
+          </span>
+        }
+      </a>
+    }
+  </div>
+
+  <!-- Centro: el escaparate con una partida célebre en directo -->
+  <div class="lobby__stage">
+    <span class="tag" aria-hidden="true">¡Jaque!</span>
+    <app-showcase />
+  </div>
+
+  <!-- Derecha: lo siguiente que te espera fuera de las partidas -->
+  <div class="lobby__side">
+    @if (nextPuzzle(); as p) {
+      <a class="panel puzzle" [routerLink]="['/problemas', p.stop.puzzle.id]">
+        <h2 class="puzzle__title">Problema {{ p.stop.index + 1 }}</h2>
+        <span class="puzzle__room">{{ p.chapter.name }}</span>
+        <span class="puzzle__task">
+          Juegan {{ p.orientation === 'w' ? 'blancas' : 'negras' }}
+          @if (p.themes.length) {
+            · {{ p.themes.join(', ') }}
+          }
+        </span>
+        <span class="progress puzzle__progress"><span [style.width.%]="(p.stop.index / totalPuzzles) * 100"></span></span>
+        <span class="btn">Resolver</span>
+      </a>
+    }
+
+    <a class="queen" routerLink="/reina">
+      <span class="spray queen__new" aria-hidden="true">¡nuevo!</span>
+      <img class="queen__piece" [src]="'pieces/' + theme() + '/wQ.webp'" alt="" />
+      <span class="queen__title">La Reina</span>
+      <span class="queen__text">Arrasa el tablero, mejora a tu reina y vuelve a por más.</span>
+      <span class="btn btn--ghost">Jugar</span>
+    </a>
+  </div>
+</div>

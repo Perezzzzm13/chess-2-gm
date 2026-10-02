@@ -1,0 +1,22 @@
+<div class="card" [class.card--active]="active()">
+  <app-portrait [piece]="player().piece" [tint]="player().tint" [size]="46" />
+  <div class="info">
+    <div class="name">
+      {{ player().name }}
+      @if (player().rating) {
+        <span class="rating">{{ player().rating }}</span>
+      }
+    </div>
+    <div class="captured">
+      @for (src of capturedPieces(); track $index) {
+        <img [src]="src" alt="" />
+      }
+      @if (advantage() > 0) {
+        <span class="advantage">+{{ advantage() }}</span>
+      }
+    </div>
+  </div>
+  @if (thinking()) {
+    <div class="thinking" aria-label="Pensando"><span></span><span></span><span></span></div>
+  }
+</div>

@@ -1,0 +1,31 @@
+<svg [attr.viewBox]="box" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+  @for (e of edges(); track $index) {
+    <line
+      [attr.x1]="e.x1"
+      [attr.y1]="e.y1"
+      [attr.x2]="e.x2"
+      [attr.y2]="e.y2"
+      [class.lit]="e.lit"
+      [attr.stroke]="e.lit ? e.color : null"
+    />
+  }
+  @for (l of labels; track l.branch) {
+    <text class="label" [attr.x]="l.x" [attr.y]="l.y" [attr.fill]="l.color">{{ l.name }}</text>
+  }
+  @for (d of dots(); track d.id) {
+    <rect
+      [attr.x]="d.x"
+      [attr.y]="d.y"
+      [attr.width]="d.size"
+      [attr.height]="d.size"
+      [class]="'dot dot--' + d.state"
+      [class.dot--ready]="d.ready"
+      [class.dot--selected]="d.id === selected()"
+      [attr.fill]="d.state === 'owned' || d.state === 'maxed' || d.state === 'available' ? d.color : null"
+      [attr.stroke]="d.state === 'available' ? d.color : null"
+    />
+  }
+  @if (view(); as v) {
+    <rect class="view" [attr.x]="v.x" [attr.y]="v.y" [attr.width]="v.width" [attr.height]="v.height" />
+  }
+</svg>

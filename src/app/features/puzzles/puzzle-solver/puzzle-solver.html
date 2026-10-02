@@ -1,0 +1,117 @@
+<div class="page solver">
+  <section class="arena">
+    <app-board
+      [fen]="fen()"
+      [orientation]="playerColor()"
+      [movable]="movable()"
+      [lastMove]="lastMove()"
+      [arrows]="arrows()"
+      [hintSquare]="hint()"
+      (move)="onMove($event)"
+    />
+  </section>
+
+  <aside class="side">
+    <section class="panel card">
+      <header class="card__head">
+        <a class="back" routerLink="/problemas" title="Volver al mapa"><app-icon name="exit" /> Mapa</a>
+        <span class="card__where">
+          <strong>Problema {{ stop().index + 1 }}</strong> · {{ chapter().name }}
+        </span>
+      </header>
+      @if (replay()) {
+        <p class="replay"><app-icon name="retry" /> Repaso: ya lo resolviste, esta vez no suma puntos.</p>
+      }
+      <h2 class="card__turn">
+        <img [src]="'pieces/pixel/' + playerColor() + 'K.webp'" alt="" />
+        Juegan {{ playerColor() === 'w' ? 'blancas' : 'negras' }}
+      </h2>
+      <div class="chips">
+        <span class="chip"><app-icon name="puzzle" /> {{ puzzle().rating }}</span>
+        <span class="chip">{{ movesToFind() }} {{ movesToFind() === 1 ? 'jugada' : 'jugadas' }}</span>
+        @for (t of themes().slice(0, 3); track t) {
+          <span class="chip">{{ t }}</span>
+        }
+      </div>
+
+      <div [class]="'status status--' + state()">
+        @switch (state()) {
+          @case ('intro') {
+            <app-icon class="status__icon" name="search" />
+            <p>Mira lo que ha jugado tu rival…</p>
+          }
+          @case ('playing') {
+            <app-icon class="status__icon" name="swords" />
+            <p>Tu turno. Encuentra la mejor jugada.</p>
+          }
+          @case ('wrong') {
+            <app-icon class="status__icon" name="lightning" />
+            <p>¡No es esa! Prueba otra.</p>
+          }
+          @case ('solved') {
+            <app-icon class="status__icon" name="crown" />
+            <p>
+              <strong>¡Resuelto!</strong>
+              @if (replay()) {
+                Buen repaso.
+              } @else {
+                {{ failed() ? 'Con algo de ayuda, pero cuenta: el siguiente ya está abierto.' : 'A la primera.' }}
+              }
+            </p>
+          }
+          @case ('revealed') {
+            <app-icon class="status__icon" name="owl" />
+            <p>Esta era la solución. {{ replay() ? 'Repásala con calma.' : 'Resuélvelo tú para abrir el siguiente.' }}</p>
+          }
+        }
+      </div>
+
+      @if (ratingDelta() !== null) {
+        <p class="delta" [class.down]="ratingDelta()! < 0">
+          {{ ratingDelta()! > 0 ? '+' : '' }}{{ ratingDelta() }} puntos
+        </p>
+      }
+
+      <div class="actions">
+        @if (state() === 'solved' || state() === 'revealed') {
+          @if (state() === 'revealed') {
+            <button type="button" class="btn btn--big" (click)="retry()"><app-icon name="retry" /> Reintentar</button>
+          }
+          @if (next(); as n) {
+            @if (path.isOpen(n)) {
+              <a class="btn" [class.btn--big]="state() === 'solved'" [class.btn--ghost]="state() === 'revealed'" [routerLink]="['/problemas', n.puzzle.id]">
+                Siguiente
+              </a>
+            }
+          }
+          <a class="btn btn--ghost" routerLink="/problemas">Volver al mapa</a>
+        } @else {
+          <div class="actions__row">
+            <button type="button" class="btn btn--ghost" (click)="showHint()" [disabled]="state() === 'intro'"><app-icon name="bulb" /> Pista</button>
+            <button type="button" class="btn btn--ghost" (click)="reveal()" [disabled]="state() === 'intro'"><app-icon name="search" /> Jugada</button>
+          </div>
+          <button type="button" class="btn btn--danger btn--small" (click)="solve()" [disabled]="state() === 'intro'">Ver solución</button>
+        }
+      </div>
+    </section>
+
+    <div class="counters">
+      <div class="counter">
+        <app-icon name="trophy" />
+        <strong>{{ profile.profile().puzzleRating }}</strong>
+        <span>Nivel</span>
+      </div>
+      <div class="counter">
+        <app-icon class="counter__green" name="check" />
+        <strong>{{ profile.profile().puzzlesSolved }}</strong>
+        <span>Resueltos</span>
+      </div>
+      <div class="counter" [class.counter--hot]="profile.profile().puzzleStreak >= 3">
+        <app-icon class="counter__fire" name="fire" />
+        <strong>{{ profile.profile().puzzleStreak }}</strong>
+        <span>Racha</span>
+      </div>
+    </div>
+
+  </aside>
+</div>

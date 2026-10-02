@@ -1,0 +1,25 @@
+<app-queen-hud [hud]="hud()" (frenzyActivate)="frenzy()" (abilityUse)="ability($event)" (pauseToggle)="togglePause()" />
+
+<div class="stage" #stage>
+  <div class="tube">
+    <canvas
+      #canvas
+      class="board"
+      (pointermove)="onPointerMove($event)"
+      (pointerleave)="onPointerLeave()"
+      (pointerdown)="onPointerDown($event)"
+      (pointerup)="onPointerUp($event)"
+      (contextmenu)="$event.preventDefault()"
+    ></canvas>
+  </div>
+</div>
+
+@if (paused()) {
+  <div class="pause">
+    <p class="pause__title">Pausa</p>
+    <div class="pause__actions">
+      <button type="button" class="btn btn--big" (click)="togglePause()">Seguir</button>
+      <button type="button" class="btn btn--ghost" (click)="quit()">Terminar y cobrar</button>
+    </div>
+  </div>
+}

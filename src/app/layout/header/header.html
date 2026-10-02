@@ -1,0 +1,35 @@
+<header class="header">
+  <nav class="nav nav--left">
+    @for (link of left; track link.path) {
+      <a [routerLink]="link.path" routerLinkActive="active" [title]="link.label">
+        <app-icon [name]="link.icon" />
+        <span>{{ link.label }}</span>
+      </a>
+    }
+  </nav>
+
+  <a routerLink="/" class="brand" aria-label="Chess to GM, inicio">
+    <app-icon class="brand__crown" name="crown" />
+    <span class="brand__name">Chess to <span class="brand__gm">GM</span></span>
+  </a>
+
+  <div class="side">
+  <nav class="nav nav--right">
+    @for (link of right; track link.path) {
+      <a [routerLink]="link.path" routerLinkActive="active" [title]="link.label">
+        <app-icon [name]="link.icon" />
+        <span>{{ link.label }}</span>
+      </a>
+    }
+  </nav>
+
+  <a routerLink="/perfil" class="hud" routerLinkActive="active" title="Tu perfil: nivel {{ profile.level() }}">
+    <app-rank-emblem [rank]="profile.rank()" [size]="34" />
+    <span class="hud__badge">{{ profile.level() }}</span>
+    <span class="hud__trophies">
+      <app-icon name="trophy" />
+      {{ profile.profile().rating }}
+    </span>
+  </a>
+  </div>
+</header>

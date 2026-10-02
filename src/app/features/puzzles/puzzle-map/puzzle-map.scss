@@ -1,0 +1,427 @@
+@use 'mixins' as *;
+
+.atlas {
+  display: grid;
+  grid-template-columns: minmax(0, 620px) 360px;
+  justify-content: center;
+  grid-template-areas:
+    'head head'
+    'chapters side';
+  gap: 0 32px;
+  align-items: start;
+}
+
+.atlas__head {
+  grid-area: head;
+}
+
+.atlas__side {
+  grid-area: side;
+  position: sticky;
+  top: calc(var(--header-height) + 20px);
+  display: grid;
+  gap: 12px;
+}
+
+/* ───── Siguiente problema ───── */
+.next {
+  display: grid;
+  gap: 14px;
+
+  .panel__title {
+    margin: 0;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}
+
+.next__board {
+  display: block;
+  @include selector($inset: -2px, $arm: 22px);
+}
+
+.next__task {
+  margin: 0;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.tally {
+  display: grid;
+  gap: 8px;
+  padding-top: 14px;
+  border-top: $px dashed rgba(255, 210, 90, 0.18);
+
+  p {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    line-height: 1;
+    color: var(--text-muted);
+  }
+
+  strong {
+    color: var(--neon-gold);
+  }
+}
+
+.tally__bar {
+  height: 14px;
+}
+
+.tally__stats {
+  display: inline-flex;
+  gap: 14px;
+  margin-left: auto;
+
+  span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--text);
+  }
+
+  app-icon {
+    --icon-size: 18px;
+    --icon-stroke: #{$outline};
+    color: var(--neon-gold);
+  }
+
+  .hot app-icon {
+    color: #ff8a2a;
+  }
+}
+
+.credit {
+  margin: 0;
+  font-size: 0.9rem;
+  text-align: center;
+  color: var(--text-faint);
+}
+
+/* ───── Salas ───── */
+.chapters {
+  grid-area: chapters;
+  display: grid;
+  gap: 12px;
+}
+
+.chapter__head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 10px 18px 10px 12px;
+  background: linear-gradient(180deg, #1d0c11, #140709);
+  color: var(--text);
+  text-align: left;
+  @include frame;
+  @include selector;
+
+  &:disabled {
+    cursor: default;
+
+    &::after {
+      display: none;
+    }
+  }
+}
+
+/* Moneda de la sala con la pieza que la guarda */
+.chapter__icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 52px;
+  height: 52px;
+  border: $px solid $outline;
+  background: #ffc845;
+  box-shadow:
+    inset 0 $px 0 rgba(255, 250, 210, 0.7),
+    inset 0 (-$px) 0 #b8740f;
+  @include pixel-corners($px, 2);
+
+  app-icon {
+    --icon-size: 30px;
+    color: #4a2208;
+  }
+}
+
+.chapter__text {
+  display: grid;
+  min-width: 0;
+
+  strong {
+    font-family: var(--font-display);
+    font-size: 1.85rem;
+    line-height: 1;
+    color: var(--neon-ivory);
+    @include outlined($w: 1.5px, $drop: 2px);
+  }
+
+  small {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-faint);
+  }
+}
+
+.chapter__count {
+  margin-left: auto;
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  line-height: 1;
+  color: var(--neon-gold);
+  white-space: nowrap;
+
+  app-icon {
+    --icon-size: 28px;
+    --icon-stroke: #{$outline};
+  }
+}
+
+.chapter__done {
+  color: #8fe06a;
+}
+
+.chapter__lock {
+  color: #6a5458;
+}
+
+/* La sala en curso: filete de neón carmesí */
+.chapter--current .chapter__head {
+  background: linear-gradient(180deg, #4a0b1a, #2c0610);
+  box-shadow:
+    inset 0 0 0 $px var(--neon-red),
+    inset 0 0 18px rgba(255, 40, 80, 0.4);
+
+  .chapter__text strong {
+    color: #ffe0e6;
+  }
+}
+
+.chapter--locked .chapter__head {
+  background: #120709;
+  color: var(--text-faint);
+  box-shadow: inset 0 0 0 $px #2a1a1d;
+
+  .chapter__icon {
+    background: #3a2a30;
+    box-shadow:
+      inset 0 $px 0 rgba(255, 255, 255, 0.12),
+      inset 0 (-$px) 0 #1b1014;
+
+    app-icon {
+      color: #1b1014;
+    }
+  }
+
+  .chapter__text strong {
+    color: #8a7478;
+  }
+}
+
+/* ───── El camino de la sala: un mapa nocturno sobre un tablero apagado ───── */
+.trail {
+  container-type: inline-size;
+  position: relative;
+  margin: 10px 0 6px;
+  border: $px solid $outline;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(255, 196, 64, 0.1), transparent 60%),
+    repeating-conic-gradient(#170a0e 0 25%, #1f0e13 0 50%) 0 0 / 12.5cqw 12.5cqw;
+  box-shadow:
+    inset 0 0 0 $px #5e4317,
+    inset 0 0 40px rgba(0, 0, 0, 0.7);
+  @include pixel-corners($px, 2);
+}
+
+.trail__road {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  /* Bordes dentados, como un camino dibujado en píxeles */
+  shape-rendering: crispEdges;
+}
+
+.road {
+  fill: none;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+}
+
+.road--edge {
+  stroke: #0b0406;
+  stroke-width: 26;
+}
+
+.road--bed {
+  stroke: #2a1c21;
+  stroke-width: 18;
+}
+
+/* El tramo recorrido: una línea de neón dorado */
+.road--walked {
+  stroke: var(--neon-gold);
+  stroke-width: 5;
+  stroke-dasharray: 8 8;
+}
+
+.stop {
+  position: absolute;
+  width: 15cqw;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+}
+
+.stop__coin {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border: $px solid $outline;
+  font-family: var(--font-display);
+  font-size: 7cqw;
+  line-height: 1;
+  text-decoration: none;
+  @include pixel-corners(6px, 2);
+
+  app-icon {
+    --icon-size: 9cqw;
+  }
+}
+
+/* Cursor de selección alrededor de las monedas que se pueden jugar (la moneda recorta su propio ::after) */
+.stop:not(.stop--locked) {
+  @include selector($inset: -9px, $arm: 9px, $position: absolute);
+}
+
+/* Moneda de oro: superado */
+.stop--done .stop__coin {
+  background: #ffc845;
+  color: #4a2208;
+  box-shadow:
+    inset 0 $px 0 $px rgba(255, 250, 210, 0.6),
+    inset 0 (-$px * 2) 0 #b8740f;
+}
+
+/* El que toca: carmesí de neón */
+.stop--current {
+  z-index: 1;
+  width: 18cqw;
+
+  .stop__coin {
+    background: #d8304d;
+    color: var(--neon-ivory);
+    font-size: 8.4cqw;
+    box-shadow:
+      inset 0 0 0 $px #ffc845,
+      inset 0 ($px * 2) 0 $px rgba(255, 200, 210, 0.25),
+      inset 0 (-$px * 2) 0 $px #7d0c22;
+    @include outlined($w: 1.5px, $drop: 2px);
+  }
+
+  /* Marco que late a saltos alrededor del siguiente paso */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border: $px solid var(--neon-gold);
+    box-shadow: 0 0 12px var(--neon-gold-glow);
+    animation: ripple 1.2s steps(4) infinite;
+    pointer-events: none;
+  }
+}
+
+@keyframes ripple {
+  from {
+    opacity: 1;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.4);
+  }
+}
+
+/* Piedra apagada: bloqueado */
+.stop--locked .stop__coin {
+  background: #3a2a30;
+  color: #8f797d;
+  box-shadow:
+    inset 0 $px 0 rgba(255, 255, 255, 0.08),
+    inset 0 (-$px * 2) 0 #160d10;
+}
+
+/* El último problema de cada sala es el guardián que abre la siguiente */
+.stop--boss {
+  width: 20cqw;
+}
+
+.stop__check {
+  position: absolute;
+  right: -6%;
+  bottom: -6%;
+  display: grid;
+  place-items: center;
+  width: 42%;
+  aspect-ratio: 1;
+  border: 2px solid $outline;
+  background: #4fa83a;
+  color: #fff;
+  @include pixel-corners(3px);
+
+  app-icon {
+    --icon-size: 70%;
+  }
+}
+
+/* Tu ficha, botando a saltos sobre el problema que toca */
+.stop__token {
+  position: absolute;
+  left: 50%;
+  bottom: 62%;
+  width: 82%;
+  margin-left: -41%;
+  pointer-events: none;
+  animation: bob 0.9s steps(3) infinite alternate;
+}
+
+@keyframes bob {
+  to {
+    transform: translateY(-14%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stop--current::before,
+  .stop__token {
+    animation: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .atlas {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'head'
+      'side'
+      'chapters';
+  }
+
+  .atlas__side {
+    position: static;
+    margin-bottom: 18px;
+  }
+
+  .next__board {
+    display: none;
+  }
+}

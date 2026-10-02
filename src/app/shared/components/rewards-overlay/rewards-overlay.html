@@ -1,0 +1,30 @@
+<div class="toasts" aria-live="polite">
+  @for (t of rewards.toasts(); track t.id) {
+    <button type="button" class="toast" (click)="rewards.dismissToast(t.id)">
+      <span class="toast__icon"><app-icon [name]="icon(t.kind)" /></span>
+      <span class="toast__text">
+        <strong>{{ t.title }}</strong>
+        @if (t.detail) {
+          <span>{{ t.detail }}</span>
+        }
+      </span>
+    </button>
+  }
+</div>
+
+@if (celebration(); as c) {
+  <div class="modal-backdrop" (click)="rewards.dismissCelebration()">
+    <div class="modal celebration" (click)="$event.stopPropagation()">
+      <div class="rays"></div>
+      <div class="panel celebration__panel">
+        <div class="ribbon">{{ ribbon(c.kind) }}</div>
+        <div class="celebration__icon medallion"><app-icon [name]="icon(c.kind)" /></div>
+        <h2>{{ c.title }}</h2>
+        @if (c.detail) {
+          <p>{{ c.detail }}</p>
+        }
+        <button type="button" class="btn" (click)="rewards.dismissCelebration()">¡Genial!</button>
+      </div>
+    </div>
+  </div>
+}

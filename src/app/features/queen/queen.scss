@@ -1,0 +1,300 @@
+@use 'mixins' as *;
+
+/* ───── Cartel y mapa de mejoras ───── */
+.hub {
+  display: grid;
+  grid-template-columns: 360px minmax(0, 1fr);
+  gap: 36px;
+  align-items: start;
+}
+
+.hero {
+  position: sticky;
+  top: calc(var(--header-height) + 20px);
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  text-align: center;
+}
+
+.sign {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  padding-top: 8px;
+}
+
+/* Pintada de spray detrás del cartel: el único toque de graffiti */
+.tag {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  width: 280px;
+  transform: translateX(-50%) rotate(-7deg);
+  opacity: 0.55;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.tag__stroke {
+  fill: none;
+  stroke: #ff3b5c;
+  stroke-width: 7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.tag__drip {
+  stroke: #ff3b5c;
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.tag__drop {
+  fill: #ff3b5c;
+}
+
+.sign__queen {
+  position: relative;
+  width: 128px;
+  height: 128px;
+  margin-top: 6px;
+  image-rendering: pixelated;
+  background: radial-gradient(circle at 50% 60%, rgba(255, 196, 64, 0.35), transparent 62%);
+  animation: float 2.4s steps(6) infinite alternate;
+}
+
+@keyframes float {
+  to {
+    transform: translateY(-8px);
+  }
+}
+
+.sign__title {
+  position: relative;
+  margin: -4px 0 0;
+  font-family: var(--font-pixel);
+  font-size: clamp(4rem, 7vw, 5.6rem);
+  font-weight: 400;
+  line-height: 0.8;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  @include neon-text;
+  animation: flicker 6s steps(1) infinite;
+}
+
+/* El tubo falla de vez en cuando, como un letrero de verdad */
+@keyframes flicker {
+  0%,
+  41%,
+  43%,
+  100% {
+    opacity: 1;
+  }
+  42% {
+    opacity: 0.45;
+  }
+}
+
+.sign__sub {
+  position: relative;
+  margin: 6px 0 0;
+  font-family: var(--font-pixel);
+  font-size: 1.5rem;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  @include neon-text(rgba(255, 40, 80, 0.6), #ffd6dd);
+}
+
+.purse {
+  display: grid;
+  justify-items: center;
+  width: 100%;
+  padding: 10px 14px 12px;
+  border: $px solid $outline;
+  background: #0b0406;
+  @include pixel-corners($px, 2);
+
+  strong {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-pixel);
+    font-size: 3.6rem;
+    font-weight: 400;
+    line-height: 0.85;
+    color: #ffd25a;
+    @include outlined($w: 3px, $drop: 4px);
+  }
+
+  app-icon {
+    --icon-size: 34px;
+    --icon-stroke: #{$outline};
+  }
+}
+
+.purse__label {
+  font-family: var(--font-pixel);
+  font-size: 1.1rem;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #9d8592;
+}
+
+.record {
+  margin: -4px 0 0;
+  font-family: var(--font-pixel);
+  font-size: 1.35rem;
+  line-height: 1;
+  color: #9d8592;
+
+  span {
+    color: var(--neon-ivory, #fff4dc);
+  }
+
+  app-icon {
+    --icon-size: 14px;
+    color: #ffd25a;
+  }
+}
+
+.play {
+  width: 100%;
+}
+
+.howto {
+  display: grid;
+  gap: 6px;
+  margin: 2px 0 0;
+  padding: 12px 14px;
+  border-left: $px solid #ff3b5c;
+  background: rgba(11, 4, 6, 0.6);
+  list-style: none;
+  font-size: 0.95rem;
+  line-height: 1.35;
+  text-align: left;
+  color: #cbb6c1;
+
+  b {
+    font-family: var(--font-pixel);
+    font-size: 1.15rem;
+    font-weight: 400;
+    color: #ffd25a;
+  }
+
+  kbd {
+    display: inline-block;
+    min-width: 1.6em;
+    padding: 0 4px 1px;
+    border: 2px solid #6c5262;
+    font-family: var(--font-pixel);
+    font-size: 0.95rem;
+    text-align: center;
+    color: var(--neon-ivory, #fff4dc);
+  }
+}
+
+/* El mapa de mejoras en pequeño: todo el árbol de un vistazo, y lo que se puede comprar parpadea */
+.atlas {
+  position: relative;
+  display: grid;
+  gap: 14px;
+  padding: 20px 22px 22px;
+  background: #0d0509;
+  @include frame;
+}
+
+.atlas__title {
+  margin: 0;
+  font-size: 2.6rem;
+  line-height: 0.9;
+  @include neon-text;
+}
+
+.atlas__tag {
+  position: absolute;
+  top: 16px;
+  right: 22px;
+  font-family: var(--font-spray);
+  font-size: 1.5rem;
+  line-height: 1;
+  color: #f5e03a;
+  transform: rotate(6deg);
+  pointer-events: none;
+}
+
+.atlas__mini {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  max-height: 560px;
+  padding: 12px;
+  border: $px solid $outline;
+  background:
+    linear-gradient(rgba(255, 210, 90, 0.035) 1px, transparent 1px) 0 0 / 16px 16px,
+    linear-gradient(90deg, rgba(255, 210, 90, 0.035) 1px, transparent 1px) 0 0 / 16px 16px,
+    #0a0408;
+  @include selector($inset: 8px, $arm: 18px);
+
+  app-tree-minimap {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.atlas__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.atlas__count {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  line-height: 1;
+  color: #9d8592;
+
+  strong {
+    font-size: 2.4rem;
+    font-weight: 400;
+    color: #ffd25a;
+  }
+}
+
+/* ───── Partida ───── */
+.run {
+  position: relative;
+  display: grid;
+  /* Mismo ancho que la arena: el resumen se superpone solo a la partida */
+  max-width: min(760px, calc(100vh - var(--header-height) - 230px));
+  margin: 0 auto;
+  padding-top: 4px;
+}
+
+@media (max-width: 900px) {
+  .hub {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .hero {
+    position: static;
+  }
+
+  .sign__queen {
+    width: 96px;
+    height: 96px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sign__queen,
+  .sign__title {
+    animation: none;
+  }
+}

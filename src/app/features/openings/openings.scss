@@ -1,0 +1,188 @@
+@use 'mixins' as *;
+
+.library {
+  display: grid;
+  gap: 24px;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.mastered {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--neon-gold);
+
+  app-icon {
+    --icon-size: 22px;
+    --icon-stroke: #{$outline};
+    color: var(--neon-gold);
+  }
+}
+
+
+.stars {
+  display: inline-flex;
+  gap: 2px;
+
+  app-icon {
+    --icon-size: 26px;
+    color: var(--neon-gold);
+    --icon-stroke: #{$outline};
+
+    &.off {
+      color: #3d262b;
+    }
+  }
+}
+
+.wall {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr));
+  gap: 34px 28px;
+  padding-top: 10px;
+}
+
+/* Cartel de papel, algo torcido y sujeto con un trozo de cinta */
+.opening {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 22px 18px 16px;
+  color: #2c1a0c;
+  @include parchment;
+  clip-path: none;
+  transform: rotate(-1.2deg);
+  @include selector(#a3172a);
+
+  &:nth-child(2n) {
+    transform: rotate(1deg);
+  }
+
+  &:nth-child(3n) {
+    transform: rotate(-0.4deg);
+  }
+
+  /* La cinta adhesiva */
+  &::before {
+    content: '';
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    width: 86px;
+    height: 24px;
+    margin-left: -43px;
+    background: rgba(240, 232, 200, 0.55);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+    transform: rotate(-4deg);
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 2rem;
+    color: #1d0f06;
+    text-shadow: none;
+  }
+
+  .stars app-icon {
+    color: #e0a21a;
+
+    &.off {
+      color: #cdb98d;
+    }
+  }
+}
+
+/* Sello de goma en carmesí sobre los carteles dominados */
+.opening__stamp {
+  position: absolute;
+  top: 46%;
+  right: 10px;
+  z-index: 1;
+  padding: 0 8px 2px;
+  border: $px solid #b3122c;
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  line-height: 1;
+  color: #b3122c;
+  text-transform: uppercase;
+  opacity: 0.85;
+  transform: rotate(-12deg);
+  pointer-events: none;
+}
+
+.opening__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.opening__side {
+  width: 44px;
+  height: 44px;
+}
+
+.opening__moves {
+  margin: 0;
+  padding: 4px 0;
+  border-top: 2px dashed rgba(60, 36, 16, 0.35);
+  border-bottom: 2px dashed rgba(60, 36, 16, 0.35);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #5a3a1c;
+}
+
+.opening__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+}
+
+/* Dificultad en barritas */
+.level {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  line-height: 1;
+  color: #6a4a2a;
+
+  i {
+    width: 8px;
+    height: 16px;
+    border: 2px solid $outline;
+    background: #d9c497;
+
+    &.on {
+      background: #b3122c;
+    }
+
+    &:last-of-type {
+      margin-right: 6px;
+    }
+  }
+}
+
+.opening__go {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  line-height: 1;
+  color: #a3172a;
+}
+
